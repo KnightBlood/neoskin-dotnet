@@ -219,6 +219,17 @@ public sealed class Database
         params (string Name, object? Value)[] parameters)
     {
         using DbConnection connection = Open();
+        if (Dialect.Name == "sqlsrv")
+        {
+            // SCOPE_IDENTITY() 只对当前批次有效；单独一条命令会返回 NULL。
+            using DbCommand batch = Command(connection, sql + "; SELECT SCOPE_IDENTITY()",
+                parameters);
+            object? identity = batch.ExecuteScalar();
+            return identity is null or DBNull
+                ? 0
+                : Convert.ToInt64(identity, System.Globalization.CultureInfo.InvariantCulture);
+        }
+
         using (DbCommand insert = Command(connection, sql, parameters))
         {
             insert.ExecuteNonQuery();
@@ -229,7 +240,6 @@ public sealed class Database
             "sqlite" => "SELECT last_insert_rowid()",
             "mysql" or "mariadb" => "SELECT LAST_INSERT_ID()",
             "pgsql" => $"SELECT currval(pg_get_serial_sequence('{table}', '{primaryKey}'))",
-            "sqlsrv" => "SELECT SCOPE_IDENTITY()",
             _ => throw new NotSupportedException(Dialect.Name),
         };
         using DbCommand idCommand = Command(connection, idSql);
