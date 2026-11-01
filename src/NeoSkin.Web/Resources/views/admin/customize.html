@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: page(${pageTitle}, ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div class="row">
+    <div class="col-md-3">
+      <form class="card box-primary" method="post"
+            th:action="${view.url('/admin/customize?action=color')}">
+        <th:block th:utext="${view.csrfField()}"></th:block>
+        <div class="card-header">
+          <h3 class="card-title" th:text="${view.trans('admin.customize.change-color.title')}"></h3>
+        </div>
+        <div class="card-body">
+          <div id="navbar-color-picker">
+            <p th:text="${view.trans('admin.customize.colors.navbar')}"></p>
+            <div>
+              <label th:each="color : ${colors.navbar}">
+                <input type="radio" class="d-none" name="navbar" th:value="${color}">
+                <div th:class="|btn-color bg-${color} display-inline-block rounded-pill mr-2 mb-1 elevation-2|"></div>
+              </label>
+            </div>
+          </div>
+          <div id="sidebar-dark-picker">
+            <p th:text="${view.trans('admin.customize.colors.sidebar.dark')}"></p>
+            <div>
+              <label th:each="color : ${colors.sidebar}">
+                <input type="radio" class="d-none" name="sidebar" th:value="|dark-${color}|">
+                <div th:class="|btn-color bg-${color} display-inline-block rounded-pill mr-2 mb-1 elevation-2|"></div>
+              </label>
+            </div>
+          </div>
+          <div id="sidebar-light-picker">
+            <p th:text="${view.trans('admin.customize.colors.sidebar.light')}"></p>
+            <div>
+              <label th:each="color : ${colors.sidebar}">
+                <input type="radio" class="d-none" name="sidebar" th:value="|light-${color}|">
+                <div th:class="|btn-color bg-${color} display-inline-block rounded-pill mr-2 mb-1 elevation-2|"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <input type="submit" class="btn btn-primary"
+                 th:value="${view.trans('general.submit')}" name="submit_color">
+        </div>
+      </form>
+    </div>
+    <div class="col-md-9">
+      <th:block th:utext="${forms.homepage}"></th:block>
+      <th:block th:utext="${forms.custom_js_css}"></th:block>
+    </div>
+  </div>
+</th:block>
+
+<th:block th:fragment="before-foot">
+  <script id="blessing-extra" type="application/json" th:utext="${extra_json}"></script>
+</th:block>
+</body>
+</html>

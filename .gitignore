@@ -1,0 +1,35 @@
+# Build output
+bin/
+obj/
+publish/
+target/
+build/
+node_modules/
+TestResults/
+*.user
+
+# Runtime data / generated files（只锚定仓库根目录，避免误伤 src/**/Storage）
+/storage/
+/public/
+/wwwroot/app/
+*.sqlite
+*.sqlite-journal
+*.db
+/logs/
+*.log
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vs/
+.idea/
+*.suo
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

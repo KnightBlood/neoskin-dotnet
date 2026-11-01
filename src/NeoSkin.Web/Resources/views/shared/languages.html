@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.languages：语言下拉菜单（LanguagesMenuComposer 提供 current / langs） -->
+<li th:fragment="shared-languages" class="nav-item dropdown">
+  <a class="nav-link" data-toggle="dropdown" href="#">
+    <i class="fas fa-language" aria-hidden="true"></i>
+    <span class="d-none d-sm-inline" th:text="${current}"></span>
+  </a>
+  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+    <th:block th:each="lang : ${langs}">
+      <a th:href="${lang.value['url']}" class="dropdown-item locale" th:text="${lang.value['name']}"></a>
+      <div class="dropdown-divider"></div>
+    </th:block>
+  </div>
+</li>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <!-- 保留 ICU：PHP 的 mb_strtolower / 排序需要完整的 Unicode 大小写映射，
+         InvariantGlobalization 只有 ASCII 语义，会让非 ASCII 昵称处理失真。 -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+</Project>

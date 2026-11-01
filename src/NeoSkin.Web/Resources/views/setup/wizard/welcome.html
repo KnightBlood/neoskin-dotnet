@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{setup/base :: page(${view.trans('setup.wizard.welcome.title')}, ~{::content})}">
+<body>
+<th:block th:fragment="content">
+  <p th:text="${view.trans('setup.wizard.welcome.text', 'version', version)}"></p>
+  <p class="step">
+    <a th:href="${view.url('setup/database')}" class="btn btn-primary"
+       th:text="${view.trans('setup.wizard.welcome.button')}"></a>
+  </p>
+</th:block>
+</body>
+</html>

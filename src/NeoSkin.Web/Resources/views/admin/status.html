@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: page(${pageTitle}, ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <th:block th:replace="~{shared/grid :: grid(${gridRows})}"></th:block>
+</th:block>
+
+<th:block th:fragment="before-foot">
+</th:block>
+</body>
+</html>

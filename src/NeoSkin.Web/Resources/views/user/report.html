@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/base :: page(${pageTitle}, ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div class="card">
+    <div class="card-body p-0">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th th:text="${view.trans('front-end.report.tid')}"></th>
+            <th th:text="${view.trans('front-end.report.reason')}"></th>
+            <th th:text="${view.trans('front-end.report.status-title')}"></th>
+            <th th:text="${view.trans('front-end.report.time')}"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="r : ${reports}">
+            <td>
+              <th:block th:text="${r.tid}"></th:block>&nbsp;
+              <a th:href="${r.show_url}" target="_blank">
+                <i class="fas fa-share"></i>
+              </a>
+            </td>
+            <td th:text="${r.reason}"></td>
+            <td th:text="${r.status_label}"></td>
+            <td th:text="${r.report_at}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer">
+      <div class="float-right">
+        <th:block th:utext="${reports_links}"></th:block>
+      </div>
+    </div>
+  </div>
+</th:block>
+
+<th:block th:fragment="before-foot">
+</th:block>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: page(${pageTitle}, ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div th:if="${view.session('update_notice')}" class="alert alert-success" role="status"
+       th:text="${view.session('update_notice')}"></div>
+  <div th:if="${view.session('update_error')}" class="alert alert-danger" role="alert"
+       th:text="${view.session('update_error')}"></div>
+  <div th:if="${errors.any()}" class="alert alert-danger" role="alert"
+       th:text="${errors.first()}"></div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title" th:text="${view.trans('admin.update.info.title')}"></h3>
+        </div>
+        <div class="card-body">
+          <th:block th:if="${can_update}">
+            <div class="callout callout-info"
+                 th:text="${view.trans('admin.update.info.available')}"></div>
+            <div class="container-fluid">
+              <div class="row mb-3">
+                <div class="col-sm-4" th:text="${view.trans('admin.update.info.versions.latest')}"></div>
+                <div class="col-sm-8" th:text="|v${info.latest}|"></div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-sm-4" th:text="${view.trans('admin.update.info.versions.current')}"></div>
+                <div class="col-sm-8" th:text="|v${info.current}|"></div>
+              </div>
+            </div>
+          </th:block>
+          <th:block th:unless="${can_update}">
+            <div th:if="${error != null}" class="callout callout-danger"
+                 th:text="${connection_error}"></div>
+            <div th:unless="${error != null}" class="callout callout-success"
+                 th:text="${view.trans('admin.update.info.up-to-date')}"></div>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-sm-4" th:text="${view.trans('admin.update.info.versions.current')}"></div>
+                <div class="col-sm-8" th:text="|v${info.current}|"></div>
+              </div>
+            </div>
+          </th:unless>
+        </div>
+        <div class="card-footer">
+          <button th:if="${can_update}" class="btn bg-primary" id="update"
+                  th:text="${view.trans('admin.update.info.button')}"></button>
+          <button th:unless="${can_update}" class="btn bg-primary" disabled="disabled"
+                  th:text="${view.trans('admin.update.info.button')}"></button>
+          <a target="_blank" class="btn btn-default float-right"
+             href="https://github.com/DreamCraft-Tech/blessing-skin-server-patch/releases"
+             th:text="${view.trans('admin.update.info.check-github')}"></a>
+        </div>
+      </div>
+
+      <div class="card card-outline card-primary">
+        <div class="card-header"><h3 class="card-title">ZIP 运行包更新</h3></div>
+        <div class="card-body">
+          <p>上传完整的 Blessing Skin 运行包，校验后安装。支持直接包含程序文件，或外层包含一个目录的 ZIP。</p>
+          <p class="text-muted">
+            运行包包含 <code>vendor/</code> 和编译后的前端资源。当前上传上限：<strong
+              th:text="${upload_limits['effective']}"></strong>。<br>
+            PHP 文件限制：<th:block th:text="${upload_limits['php_upload']}"></th:block>；
+            请求限制：<th:block th:text="${upload_limits['php_post']}"></th:block>；
+            应用配置：<th:block th:text="${upload_limits['application']}"></th:block>。<br>
+            OpenResty 请求限制由站点配置决定。
+          </p>
+          <p th:if="${!upload_limits['enabled']}" class="text-warning">PHP 文件上传已关闭。</p>
+
+          <form method="post" th:action="${view.route('admin.update.upload')}"
+                enctype="multipart/form-data" data-system-update-form
+                data-progress="正在上传并校验运行包…">
+            <th:block th:utext="${view.csrfField()}"></th:block>
+            <div class="form-group">
+              <label for="system-update-package">选择 ZIP 运行包</label>
+              <div class="custom-file">
+                <input id="system-update-package" class="custom-file-input" type="file"
+                       name="package" accept=".zip,application/zip" required
+                       th:attr="disabled=${!upload_limits['enabled'] ? 'disabled' : null}">
+                <label class="custom-file-label" for="system-update-package"
+                       data-browse="选择文件">尚未选择文件</label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary"
+                    th:attr="disabled=${!upload_limits['enabled'] ? 'disabled' : null}">上传并校验</button>
+            <p class="mt-2 mb-0" role="status" data-update-progress hidden></p>
+          </form>
+
+          <th:block th:if="${pending_package != null}">
+            <hr>
+            <dl class="row">
+              <dt class="col-sm-4">目标版本</dt>
+              <dd class="col-sm-8" th:text="${pending_package['version']}"></dd>
+              <dt class="col-sm-4">程序文件</dt>
+              <dd class="col-sm-8" th:text="|${pending_package['count']} 个|"></dd>
+              <dt class="col-sm-4">SHA-256</dt>
+              <dd class="col-sm-8"><code style="overflow-wrap:anywhere"
+                    th:text="${pending_package['sha256']}"></code></dd>
+            </dl>
+            <form method="post" th:action="${view.route('admin.update.install')}"
+                  data-system-update-form data-progress="正在安装运行包…">
+              <th:block th:utext="${view.csrfField()}"></th:block>
+              <input type="hidden" name="id" th:value="${pending_package['id']}">
+              <button type="submit" class="btn btn-success"
+                      th:text="|确认安装 ${pending_package['version']}|"></button>
+              <p class="mt-2 mb-0" role="status" data-update-progress hidden></p>
+            </form>
+          </th:block>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title" th:text="${view.trans('admin.update.cautions.title')}"></h3>
+        </div>
+        <div class="card-body">
+          <th:block th:utext="${cautions_html}"></th:block>
+          <a target="_blank" href="https://blessing.netlify.com/update-sources.html"
+             th:text="${view.trans('admin.update.cautions.link')}"></a>
+        </div>
+      </div>
+
+      <div th:each="release, stat : ${patch_releases}" class="card card-outline card-info">
+        <div class="card-header p-0">
+          <button type="button"
+                  class="btn btn-block text-left font-weight-bold collapsed p-3"
+                  data-toggle="collapse" aria-expanded="false"
+                  th:attr="data-target=|#version-changelog-${stat.index + 1}|,aria-controls=|version-changelog-${stat.index + 1}|">
+            <th:block th:text="${release['version'] == info.current ? '当前版本更新日志' : '版本更新日志'}"></th:block>
+            · <th:block th:text="${release['version']}"></th:block>
+            <span class="float-right"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
+          </button>
+        </div>
+        <div class="card-body collapse" th:id="|version-changelog-${stat.index + 1}|">
+          <p class="text-muted" th:text="${release['date']}"></p>
+          <ul class="pl-3 mb-0">
+            <li class="mb-2" th:each="note : ${release['notes']}" th:text="${note}"></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</th:block>
+
+<th:block th:fragment="before-foot">
+  <script>
+    var packageInput = document.getElementById('system-update-package');
+    if (packageInput) {
+      packageInput.addEventListener('change', function () {
+        packageInput.nextElementSibling.textContent = packageInput.files.length
+          ? packageInput.files[0].name : '尚未选择文件';
+      });
+    }
+    document.querySelectorAll('[data-system-update-form]').forEach(function (form) {
+      form.addEventListener('submit', function () {
+        form.querySelector('button[type="submit"]').disabled = true;
+        var status = form.querySelector('[data-update-progress]');
+        status.hidden = false;
+        var spinner = document.createElement('i');
+        spinner.className = 'fas fa-spinner fa-spin mr-1';
+        spinner.setAttribute('aria-hidden', 'true');
+        status.appendChild(spinner);
+        status.appendChild(document.createTextNode(form.dataset.progress));
+      });
+    });
+  </script>
+</th:block>
+</body>
+</html>

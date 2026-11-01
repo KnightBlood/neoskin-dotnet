@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{auth/base :: page(~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <!-- Thymeleaf 里 th:replace 的优先级高于 th:each，必须拆成两层：
+       外层遍历 rows，内层用预处理把变量展开成模板名。 -->
+  <th:block th:each="row : ${rows}">
+    <th:block th:replace="~{__${row}__ :: row}"></th:block>
+  </th:block>
+</th:block>
+
+<th:block th:fragment="before-foot">
+  <script id="blessing-extra" type="application/json" th:utext="${extra}"></script>
+</th:block>
+</body>
+</html>

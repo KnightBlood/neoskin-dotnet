@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="row" class="mt-3">
+  <a th:href="${view.url('auth/register')}" th:text="${view.trans('auth.register-link')}"></a>
+</div>
+</body>
+</html>

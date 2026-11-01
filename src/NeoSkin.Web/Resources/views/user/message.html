@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/base :: page('站内信', ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div class="card card-outline card-info">
+    <div class="card-header"><h2 class="card-title" th:text="${message_title}"></h2></div>
+    <div class="card-body" style="overflow-wrap:anywhere" th:utext="${body_html}"></div>
+    <div class="card-footer d-flex justify-content-between">
+      <span class="text-muted" th:text="${message_created_at}"></span>
+      <a th:href="${inbox_url}">返回站内信</a>
+    </div>
+  </div>
+</th:block>
+<th:block th:fragment="before-foot"></th:block>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: page('通知与公告', ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div th:if="${view.session('communication_notice')}" class="alert alert-success" role="status"
+       th:text="${view.session('communication_notice')}"></div>
+  <div th:if="${errors.any()}" class="alert alert-danger" role="alert" th:text="${errors.first()}"></div>
+
+  <th:block th:if="${editor_open}">
+    <form id="communication-editor" method="post"
+          th:action="${form_action}"
+          th:attr="data-preview=${preview_url},data-import=${import_url}">
+      <th:block th:utext="${view.csrfField()}"></th:block>
+      <input th:if="${editing != null}" type="hidden" name="_method" value="PUT">
+      <script type="application/json" id="communication-initial" th:utext="${editor_data_json}"></script>
+      <input type="hidden" name="blocks_json" id="communication-blocks">
+      <div class="card card-outline card-primary">
+        <div class="card-header">
+          <h2 class="card-title"
+              th:text="${editor_data['kind'] == 'announcement' ? '编辑站点公告' : (editing != null ? '编辑站内信 #' + editing.id : '新建站内信')}"></h2>
+          <div class="card-tools">
+            <a class="btn btn-default" th:href="${index_url}">返回列表</a>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group col-md-5"><label for="communication-title">标题</label><input id="communication-title" class="form-control" name="title" required maxlength="100" th:value="${editor_data['title']}"></div>
+            <div class="form-group col-md-3"><label for="communication-kind">发布位置</label><select id="communication-kind" name="kind" class="form-control">
+              <option value="announcement" th:selected="${editor_data['kind'] == 'announcement'}">站点公告</option>
+              <option value="message" th:selected="${editor_data['kind'] == 'message'}">站内信</option>
+              <option value="both" th:selected="${editor_data['kind'] == 'both'}">公告与站内信</option>
+            </select></div>
+            <div class="form-group col-md-4"><label for="communication-locale">公告语言</label><input id="communication-locale" name="locale" class="form-control" th:value="${editor_data['locale']}" maxlength="20" placeholder="默认（所有语言）；或 zh_CN"></div>
+          </div>
+          <p class="text-muted small">公告显示在用户仪表盘，站内信按所选收件范围发送。</p>
+          <div class="form-row" id="communication-audience">
+            <div class="form-group col-md-4"><label for="communication-receiver">站内信收件人</label><select id="communication-receiver" name="receiver" class="form-control">
+              <option value="all" th:selected="${editor_data['audience']['receiver'] == 'all'}">全部用户</option>
+              <option value="normal" th:selected="${editor_data['audience']['receiver'] == 'normal'}">普通用户</option>
+              <option value="uid" th:selected="${editor_data['audience']['receiver'] == 'uid'}">指定 UID</option>
+              <option value="email" th:selected="${editor_data['audience']['receiver'] == 'email'}">指定邮箱</option>
+            </select></div>
+            <div class="form-group col-md-4"><label for="communication-uid">UID</label><input id="communication-uid" class="form-control" name="uid" type="number" min="1" th:value="${editor_data['audience']['uid']}"></div>
+            <div class="form-group col-md-4"><label for="communication-email">邮箱</label><input id="communication-email" class="form-control" name="email" type="email" th:value="${editor_data['audience']['email']}"></div>
+          </div>
+          <p th:if="${editing != null and editing.status == 'published' and editing.kind != 'announcement'}" class="text-muted mb-0">编辑后同步更新原收件人的站内信，保留已读状态。</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6"><div class="card card-outline card-primary"><div class="card-header"><h2 class="card-title">内容设计器</h2></div><div class="card-body">
+          <div class="form-group"><label for="communication-mode">编辑模式</label><select name="editor" id="communication-mode" class="form-control"><option value="blocks">可视化组件</option><option value="source">Markdown / HTML 源码</option></select></div>
+          <div id="communication-visual">
+            <div class="btn-toolbar mb-3" role="toolbar" aria-label="添加组件">
+              <button class="btn btn-default mr-2 mb-2" type="button" data-add="text">+ 文本</button>
+              <button class="btn btn-default mr-2 mb-2" type="button" data-add="heading">+ 标题</button>
+              <button class="btn btn-default mr-2 mb-2" type="button" data-add="alert">+ 提示框</button>
+              <button class="btn btn-default mr-2 mb-2" type="button" data-add="collapse">+ 折叠卡片</button>
+              <button class="btn btn-default mr-2 mb-2" type="button" data-add="divider">+ 分隔线</button>
+            </div>
+            <p class="text-muted small">点击组件编辑属性，拖动或使用上下箭头调整顺序。</p>
+            <div id="communication-canvas" class="border rounded p-2 mb-3" style="min-height:90px" aria-label="组件列表"></div>
+            <div id="communication-properties" hidden class="border rounded p-3">
+              <h3 class="h6">组件属性</h3>
+              <div class="form-group" id="block-title-group"><label for="block-title">标题</label><input id="block-title" class="form-control" maxlength="200"></div>
+              <div class="form-group" id="block-content-group"><label for="block-content">正文（支持 Markdown）</label><div class="mb-1"><button type="button" class="btn btn-light btn-sm" data-format="bold">粗体</button> <button type="button" class="btn btn-light btn-sm" data-format="italic">斜体</button> <button type="button" class="btn btn-light btn-sm" data-format="list">列表</button></div><textarea id="block-content" class="form-control" rows="6" maxlength="10000"></textarea></div>
+              <div class="form-group" id="block-tone-group"><label for="block-tone">颜色</label><select id="block-tone" class="form-control">
+                <option value="info">信息（青色）</option><option value="success">成功（绿色）</option><option value="warning">提醒（黄色）</option><option value="danger">重要（红色）</option><option value="primary">主题（蓝色）</option><option value="secondary">次要（灰色）</option>
+              </select></div>
+              <div class="form-check" id="block-expanded-group"><input id="block-expanded" class="form-check-input" type="checkbox"><label class="form-check-label" for="block-expanded">默认展开</label></div>
+            </div>
+          </div>
+          <div id="communication-source-panel" hidden><label for="communication-source">Markdown / HTML</label><textarea id="communication-source" name="source" class="form-control text-monospace" rows="18" maxlength="100000" th:text="${editor_data['source']}"></textarea><button id="communication-import" type="button" class="btn btn-outline-primary mt-2">导入为可视化组件</button></div>
+          <p id="communication-editor-status" class="small text-muted mt-2 mb-0" role="status" aria-live="polite"></p>
+        </div></div></div>
+        <div class="col-lg-6"><div class="card card-outline card-info"><div class="card-header"><h2 class="card-title">实时预览</h2></div><div id="communication-preview" class="card-body" aria-live="polite" style="overflow-wrap:anywhere;max-height:850px;overflow:auto">正在准备预览…</div></div></div>
+      </div>
+      <div class="mb-4">
+        <button type="submit" name="operation" value="publish" class="btn btn-primary mr-2"
+                th:text="${editing != null and editing.status == 'published' ? '更新发布内容' : (editing != null and editing.status == 'withdrawn' ? '重新发布' : '发布')}"></button>
+        <button th:if="${editing == null or editing.status != 'published'}" type="submit" name="operation" value="draft" class="btn btn-default mr-2">保存草稿</button>
+        <a class="btn btn-default" th:href="${index_url}">返回列表</a>
+      </div>
+    </form>
+  </th:block>
+
+  <th:block th:unless="${editor_open}">
+    <p><a class="btn btn-primary" th:href="${new_url}">新建站内信</a> <a class="btn btn-default ml-2" th:href="${announcement_url}">编辑站点公告</a></p>
+    <div class="card" id="communication-history"><div class="card-header"><h2 class="card-title">站内信发布与草稿记录</h2></div><div class="card-body table-responsive"><table class="table table-striped"><thead><tr><th>标题</th><th>位置</th><th>状态</th><th>已读 / 投递</th><th>更新时间</th><th>操作</th></tr></thead><tbody>
+      <tr th:each="item : ${messages}">
+        <td th:text="${item['title']}"></td>
+        <td th:text="${item['kind'] == 'announcement' ? '公告' : (item['kind'] == 'message' ? '站内信' : '公告与站内信')}"></td>
+        <td th:text="${item['status'] == 'draft' ? '草稿' : (item['status'] == 'published' ? '已发布' : '已撤回')}"></td>
+        <td th:text="|${item['read_count']} / ${item['delivery_count']}|"></td>
+        <td th:text="${item['updated_at']}"></td>
+        <td class="text-nowrap">
+          <a class="btn btn-default mr-2" th:href="${item['edit_url']}">编辑</a>
+          <form th:if="${item['status'] == 'published'}" class="d-inline" method="post"
+                th:action="${item['withdraw_url']}"
+                data-communication-withdraw th:attr="data-title=${item['title']},data-kind=${item['kind']}">
+            <th:block th:utext="${view.csrfField()}"></th:block>
+            <button class="btn btn-danger" type="submit">撤回</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(messages)}"><td colspan="6">暂无记录。</td></tr>
+    </tbody></table></div>
+      <div class="card-footer clearfix">
+        <span class="text-muted float-left mt-2 mb-2 mr-3"
+              th:text="|共 ${pagination['total']} 条，第 ${pagination['current_page']} / ${pagination['last_page']} 页|"></span>
+        <th:block th:replace="~{shared/communication-pagination :: communication-pagination(${pagination})}"></th:block>
+      </div>
+    </div>
+  </th:block>
+
+  <button type="button" id="communication-withdraw-open" data-toggle="modal" data-target="#communication-withdraw-modal" hidden aria-hidden="true" tabindex="-1"></button>
+  <div class="modal fade" id="communication-withdraw-modal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="communication-withdraw-title"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h2 class="modal-title h5" id="communication-withdraw-title">确认撤回</h2><button type="button" class="close" data-dismiss="modal" aria-label="关闭"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><p>撤回“<strong id="communication-withdraw-name"></strong>”？</p><p id="communication-withdraw-impact" class="mb-0"></p></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button><button type="button" class="btn btn-danger" id="communication-withdraw-confirm">确认撤回</button></div></div></div></div>
+</th:block>
+
+<th:block th:fragment="before-foot">
+  <script th:src="${view.url('app/communications.js?v=6.0.6_patch')}" defer></script>
+</th:block>
+</body>
+</html>

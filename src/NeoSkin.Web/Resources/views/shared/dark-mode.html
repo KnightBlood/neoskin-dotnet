@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.dark-mode：登录后才显示 -->
+<li th:fragment="shared-dark-mode" class="nav-item" id="toggle-dark-mode" th:if="${view.authCheck()}">
+  <a class="nav-link" href="#" role="button">
+    <i class="fas" th:classappend="${dark_mode ? 'fa-moon' : 'fa-sun'}"></i>
+  </a>
+</li>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{auth/base :: page(~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <p class="login-box-msg" th:text="${view.trans('auth.bind.message')}"></p>
+  <form method="post">
+    <input type="hidden" name="_token" th:value="${view.csrfToken()}">
+    <div class="input-group mb-3">
+      <input type="email" name="email" class="form-control" th:placeholder="${view.trans('auth.email')}" required>
+      <div class="input-group-append">
+        <div class="input-group-text">
+          <i class="fas fa-envelope"></i>
+        </div>
+      </div>
+    </div>
+    <th:block th:if="${errors != null and errors.any}">
+      <div class="alert alert-danger">
+        <i class="icon fas fa-exclamation-triangle"></i>
+        <span th:text="${errors.first}"></span>
+      </div>
+    </th:block>
+    <th:block th:if="${view.sessionHas('errorMessage')}">
+      <div class="alert alert-danger">
+        <i class="icon fas fa-exclamation-triangle"></i>
+        <span th:text="${view.sessionPull('errorMessage')}"></span>
+      </div>
+    </th:block>
+    <button type="submit" class="btn btn-primary btn-block" th:text="${view.trans('general.submit')}"></button>
+  </form>
+<th:block th:fragment="before-foot"></th:block>
+</th:block>
+</body>
+</html>

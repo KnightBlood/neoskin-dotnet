@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  shared.foot：i18n 脚本 + app.js + 插件脚本 + custom_js + extra_foot
+  插件脚本经 filter 'scripts' 注入（Hook.addScriptFileToPage）。
+-->
+<th:block th:fragment="shared-foot">
+  <script th:src="${i18n}" crossorigin="anonymous"></script>
+  <script th:src="${assets['app']}" crossorigin="anonymous"></script>
+  <script th:each="script : ${scripts}" th:src="${script['src']}"
+          crossorigin="anonymous"></script>
+  <script th:if="${inline_js}" th:utext="${inline_js}"></script>
+  <th:block th:if="${extra_foot}" th:utext="${extra_foot}"></th:block>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.header：顶部导航（navbar_color / color_mode / dark_mode / 通知 / 语言 / 用户菜单） -->
+<nav th:fragment="shared-header" class="main-header navbar navbar-expand"
+     th:classappend="|navbar-${navbar_color} navbar-${color_mode}|">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" data-widget="pushmenu" href="#">
+        <i class="fas fa-bars"></i>
+      </a>
+    </li>
+  </ul>
+
+  <ul class="navbar-nav ml-auto">
+    <th:block th:replace="~{shared/dark-mode :: shared-dark-mode}"></th:block>
+    <th:block th:replace="~{shared/notifications :: shared-notifications}"></th:block>
+    <th:block th:replace="~{shared/languages :: shared-languages}"></th:block>
+    <th:block th:replace="~{shared/user-menu :: shared-user-menu}"></th:block>
+  </ul>
+</nav>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="shared-head">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="csrf-token" th:content="${view.csrfToken()}">
+  <meta name="theme-color" th:content="${theme_color}">
+  <meta name="keywords" th:content="${seo['keywords']}">
+  <meta name="description" th:content="${seo['description']}">
+  <!-- seo.extra：源里是 |striptags('<meta>')|raw，只保留 meta 标签 → 原样输出 -->
+  <th:block th:if="${seo['extra']}" th:utext="${seo['extra']}"></th:block>
+  <link th:if="${has_cdn_host}"
+        rel="preconnect" th:href="${custom_cdn_host}" id="cdn-host" crossorigin="anonymous">
+  <!-- window.blessing = {...}（Twig 的 blessing|json_encode|raw） -->
+  <script th:inline="javascript">/*<![CDATA[*/ window.blessing = [[${blessing}]]; /*]]>*/</script>
+  <link rel="stylesheet" th:href="${assets['style']}" crossorigin="anonymous">
+  <!-- 插件经 filter 'head_links' 注入的 <link>（Hook.addStyleFileToPage） -->
+  <link th:each="link : ${links}" rel="stylesheet" th:href="${link['href']}"
+        crossorigin="anonymous">
+  <link rel="shortcut icon" th:href="${favicon}">
+  <link rel="icon" type="image/png" th:href="${favicon}" sizes="192x192">
+  <link rel="apple-touch-icon" th:href="${favicon}" sizes="180x180">
+  <style th:if="${inline_css}" th:utext="${inline_css}"></style>
+  <th:block th:if="${extra_head}" th:utext="${extra_head}"></th:block>
+</th:block>
+</html>

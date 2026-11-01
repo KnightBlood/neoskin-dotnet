@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: page(${pageTitle}, ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div th:if="${errors.any()}" class="alert alert-danger" role="alert"
+       th:text="${errors.first()}"></div>
+  <div class="row">
+    <div class="col-md-6">
+      <th:block th:utext="${forms.general}"></th:block>
+    </div>
+    <div class="col-md-6">
+      <div class="card card-outline card-info">
+        <div class="card-body">
+          <a th:href="${view.route('admin.communications.index')}">前往通知与公告</a>
+        </div>
+      </div>
+      <th:block th:utext="${forms.meta}"></th:block>
+      <th:block th:utext="${forms.recaptcha}"></th:block>
+      <th:block th:utext="${forms.updates}"></th:block>
+    </div>
+  </div>
+</th:block>
+
+<th:block th:fragment="before-foot">
+</th:block>
+</body>
+</html>

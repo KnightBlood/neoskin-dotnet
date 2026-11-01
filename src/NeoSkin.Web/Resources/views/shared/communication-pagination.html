@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.communication-pagination：pager 为控制器装配的分页字典 -->
+<nav th:fragment="communication-pagination(pager)" class="float-right" aria-label="通知与公告分页">
+  <ul class="pagination mb-2">
+    <li class="page-item" th:classappend="${pager['on_first_page'] ? 'disabled' : ''}">
+      <span th:if="${pager['on_first_page']}" class="page-link" aria-disabled="true">‹<span class="d-inline d-sm-none ml-1">上一页</span></span>
+      <a th:unless="${pager['on_first_page']}" class="page-link" th:href="${pager['previous_page_url']}" rel="prev" aria-label="上一页">‹<span class="d-inline d-sm-none ml-1">上一页</span></a>
+    </li>
+    <th:block th:each="seg : ${pager['pages']}">
+      <li th:if="${seg['gap'] != null and seg['gap']}" class="page-item disabled d-none d-sm-block"><span class="page-link" aria-disabled="true">…</span></li>
+      <li th:unless="${seg['gap'] != null and seg['gap']}" class="page-item d-none d-sm-block"
+          th:classappend="${seg['current'] ? 'active' : ''}">
+        <span th:if="${seg['current']}" class="page-link" aria-current="page" th:text="${seg['number']}"></span>
+        <a th:unless="${seg['current']}" class="page-link" th:href="${seg['url']}"
+           th:attr="aria-label=|第 ${seg['number']} 页|" th:text="${seg['number']}"></a>
+      </li>
+    </th:block>
+    <li class="page-item" th:classappend="${pager['has_more_pages'] ? '' : 'disabled'}">
+      <a th:if="${pager['has_more_pages']}" class="page-link" th:href="${pager['next_page_url']}" rel="next" aria-label="下一页"><span class="d-inline d-sm-none mr-1">下一页</span>›</a>
+      <span th:unless="${pager['has_more_pages']}" class="page-link" aria-disabled="true"><span class="d-inline d-sm-none mr-1">下一页</span>›</span>
+    </li>
+  </ul>
+</nav>
+</body>
+</html>

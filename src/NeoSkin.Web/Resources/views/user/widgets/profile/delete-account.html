@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="widget">
+  <div class="card card-danger">
+    <div class="card-header">
+      <h3 class="card-title" th:text="${view.trans('user.profile.delete.title')}"></h3>
+    </div>
+    <div class="card-body">
+      <th:block th:if="${user_is_admin}">
+        <p th:text="${view.trans('user.profile.delete.admin')}"></p>
+        <button class="btn btn-danger" disabled="disabled"
+                th:text="${view.trans('user.profile.delete.button')}"></button>
+      </th:block>
+      <th:block th:unless="${user_is_admin}">
+        <p th:text="${view.trans('user.profile.delete.notice', 'site', site_name)}"></p>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#modal-delete-account"
+                th:text="${view.trans('user.profile.delete.button')}"></button>
+      </th:block>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>

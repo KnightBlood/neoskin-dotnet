@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.user-panel：头像 + 昵称 + 徽章 -->
+<div th:fragment="shared-user-panel" class="user-panel mt-3 mb-3"
+     th:if="${view.authCheck()}"
+     th:classappend="${#lists.size(badges) > 0 ? 'pb-2' : ''}">
+  <div class="d-flex">
+    <div class="image">
+      <picture>
+        <source th:srcset="${panel_avatar}" type="image/webp">
+        <img th:src="${panel_avatar_png}" class="bs-avatar" alt="User Image">
+      </picture>
+    </div>
+    <div class="info">
+      <a class="d-block" data-mark="nickname"
+         th:text="${panel_nickname != null ? panel_nickname : panel_email}"></a>
+    </div>
+  </div>
+
+  <div class="mt-3 ml-2 mr-2 d-flex flex-wrap">
+    <th:block th:each="badge : ${badges}">
+      <span class="badge mb-1 mr-2" th:classappend="|bg-${badge['color']}|"
+            th:text="${badge['text']}"></span>
+    </th:block>
+  </div>
+</div>
+</body>
+</html>

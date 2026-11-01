@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  errors.languages：错误页右上角的语言切换条。
+
+  源模板是 class="{{ lang.name == lang_name ? 'label-primary' : 'label-secondary' }}"，
+  而 lang_name 在源里从未定义（恒 null），所以全部渲染成 label-secondary。
+  这里把判定结果预先算进 lang.value['css']，保留同样的语义，
+  也避开 Twig 的 map 属性访问语法（见 PORT-NOTES 偏差 7.5）。
+-->
+<div th:fragment="menu" class="text-right m-2 p-2">
+  <th:block th:each="lang : ${langs}">
+    <a th:href="${lang.value['url']}"
+       th:class="${lang.value['css']}"
+    ><th:block th:text="${lang.value['name']}"></th:block></a>
+  </th:block>
+</div>
+</body>
+</html>

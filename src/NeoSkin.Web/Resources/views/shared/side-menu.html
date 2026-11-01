@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.side-menu：遍历 items -->
+<th:block th:fragment="shared-side-menu">
+  <th:block th:each="item : ${items}">
+    <th:block th:replace="~{shared/side-menu-item :: shared-side-menu-item(${item})}"></th:block>
+  </th:block>
+</th:block>
+</body>
+</html>

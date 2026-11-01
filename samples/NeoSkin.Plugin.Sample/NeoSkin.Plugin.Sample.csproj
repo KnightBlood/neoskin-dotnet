@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PublishAot>true</PublishAot>
+    <NativeLib>Shared</NativeLib>
+    <AssemblyName>NeoSkin.Plugin.Sample</AssemblyName>
+    <RootNamespace>NeoSkin.Plugin.Sample</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <OptimizationPreference>Size</OptimizationPreference>
+    <StripSymbols>true</StripSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NeoSkin.Plugin.Abstractions\NeoSkin.Plugin.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

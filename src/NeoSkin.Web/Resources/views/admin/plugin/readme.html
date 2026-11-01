@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: page(${pageTitle}, ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div class="card card-secondary">
+    <div class="card-header">
+      <h3 class="card-title" th:text="${view.trans('admin.plugins.readme')}"></h3>
+    </div>
+    <div class="card-body">
+      <th:block th:utext="${readme_html}"></th:block>
+    </div>
+    <div class="card-footer">
+      <button class="btn bg-primary" onclick="history.back()"
+              th:text="${view.trans('general.back')}"></button>
+    </div>
+  </div>
+</th:block>
+
+<th:block th:fragment="before-foot">
+</th:block>
+</body>
+</html>

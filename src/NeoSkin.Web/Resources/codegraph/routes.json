@@ -1,0 +1,1932 @@
+[
+  {
+    "method": "GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY",
+    "uri": ".well-known/change-password",
+    "name": null,
+    "action": "Illuminate\\Routing\\RedirectController",
+    "middleware": [
+      "web"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "/",
+    "name": "home",
+    "action": "App\\Http\\Controllers\\HomeController@index",
+    "middleware": [
+      "web"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "_ignition/execute-solution",
+    "name": "ignition.executeSolution",
+    "action": "Spatie\\LaravelIgnition\\Http\\Controllers\\ExecuteSolutionController",
+    "middleware": [
+      "Spatie\\LaravelIgnition\\Http\\Middleware\\RunnableSolutionsEnabled"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "_ignition/health-check",
+    "name": "ignition.healthCheck",
+    "action": "Spatie\\LaravelIgnition\\Http\\Controllers\\HealthCheckController",
+    "middleware": [
+      "Spatie\\LaravelIgnition\\Http\\Middleware\\RunnableSolutionsEnabled"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "_ignition/update-config",
+    "name": "ignition.updateConfig",
+    "action": "Spatie\\LaravelIgnition\\Http\\Controllers\\UpdateConfigController",
+    "middleware": [
+      "Spatie\\LaravelIgnition\\Http\\Middleware\\RunnableSolutionsEnabled"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin",
+    "name": "admin.view",
+    "action": "App\\Http\\Controllers\\AdminController@index",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/chart",
+    "name": "admin.chart",
+    "action": "App\\Http\\Controllers\\AdminController@chartData",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/closet/{user}",
+    "name": "admin.closet.add",
+    "action": "App\\Http\\Controllers\\ClosetManagementController@add",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "admin/closet/{user}",
+    "name": "admin.closet.remove",
+    "action": "App\\Http\\Controllers\\ClosetManagementController@remove",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/communications",
+    "name": "admin.communications.index",
+    "action": "App\\Http\\Controllers\\CommunicationsController@index",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/communications",
+    "name": "admin.communications.store",
+    "action": "App\\Http\\Controllers\\CommunicationsController@store",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/communications/import",
+    "name": "admin.communications.import",
+    "action": "App\\Http\\Controllers\\CommunicationsController@importSource",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "throttle:30,1"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/communications/preview",
+    "name": "admin.communications.preview",
+    "action": "App\\Http\\Controllers\\CommunicationsController@preview",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "throttle:90,1"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/communications/{communication}",
+    "name": "admin.communications.update",
+    "action": "App\\Http\\Controllers\\CommunicationsController@update",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/communications/{communication}/withdraw",
+    "name": "admin.communications.withdraw",
+    "action": "App\\Http\\Controllers\\CommunicationsController@withdraw",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY",
+    "uri": "admin/customize",
+    "name": "admin.customize",
+    "action": "App\\Http\\Controllers\\OptionsController@customize",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/i18n",
+    "name": "admin.i18n.view",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/i18n",
+    "name": "admin.i18n.create",
+    "action": "App\\Http\\Controllers\\TranslationsController@create",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/i18n/list",
+    "name": "admin.i18n.list",
+    "action": "App\\Http\\Controllers\\TranslationsController@list",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/i18n/{line}",
+    "name": "admin.i18n.update",
+    "action": "App\\Http\\Controllers\\TranslationsController@update",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "admin/i18n/{line}",
+    "name": "admin.i18n.delete",
+    "action": "App\\Http\\Controllers\\TranslationsController@delete",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/notifications/send",
+    "name": "admin.notification.send",
+    "action": "App\\Http\\Controllers\\NotificationsController@send",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY",
+    "uri": "admin/options",
+    "name": "admin.options",
+    "action": "App\\Http\\Controllers\\OptionsController@options",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/players",
+    "name": "admin.players.view",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/players/list",
+    "name": "admin.players.list",
+    "action": "App\\Http\\Controllers\\PlayersManagementController@list",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "admin/players/{player}",
+    "name": "admin.players.delete",
+    "action": "App\\Http\\Controllers\\PlayersManagementController@delete",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/players/{player}/name",
+    "name": "admin.players.name",
+    "action": "App\\Http\\Controllers\\PlayersManagementController@name",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/players/{player}/owner",
+    "name": "admin.players.owner",
+    "action": "App\\Http\\Controllers\\PlayersManagementController@owner",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/players/{player}/textures",
+    "name": "admin.players.texture",
+    "action": "App\\Http\\Controllers\\PlayersManagementController@texture",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY",
+    "uri": "admin/plugins/config/{name}",
+    "name": "admin.plugins.config",
+    "action": "App\\Http\\Controllers\\PluginController@config",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/plugins/data",
+    "name": "admin.plugins.data",
+    "action": "App\\Http\\Controllers\\PluginController@getPluginData",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/plugins/manage",
+    "name": "admin.plugins.view",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/plugins/manage",
+    "name": "admin.plugins.view",
+    "action": "App\\Http\\Controllers\\PluginController@manage",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/plugins/market",
+    "name": "admin.plugins.market.view",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/plugins/market/download",
+    "name": "admin.plugins.market.download",
+    "action": "App\\Http\\Controllers\\MarketController@download",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/plugins/market/list",
+    "name": "admin.plugins.market.list",
+    "action": "App\\Http\\Controllers\\MarketController@marketData",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/plugins/readme/{name}",
+    "name": "admin.plugins.readme",
+    "action": "App\\Http\\Controllers\\PluginController@readme",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/plugins/upload",
+    "name": "admin.plugins.upload",
+    "action": "App\\Http\\Controllers\\PluginController@upload",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "role:super-admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/plugins/wget",
+    "name": "admin.plugins.wget",
+    "action": "App\\Http\\Controllers\\PluginController@wget",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "role:super-admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/reports",
+    "name": "admin.reports.view",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/reports/list",
+    "name": "admin.reports.list",
+    "action": "App\\Http\\Controllers\\ReportController@manage",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/reports/{report}",
+    "name": "admin.reports.review",
+    "action": "App\\Http\\Controllers\\ReportController@review",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY",
+    "uri": "admin/resource",
+    "name": "admin.resource",
+    "action": "App\\Http\\Controllers\\OptionsController@resource",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY",
+    "uri": "admin/score",
+    "name": "admin.score",
+    "action": "App\\Http\\Controllers\\OptionsController@score",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/status",
+    "name": "admin.status",
+    "action": "App\\Http\\Controllers\\AdminController@status",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/update",
+    "name": "admin.update.view",
+    "action": "App\\Http\\Controllers\\UpdateController@showUpdatePage",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "role:super-admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/update/download",
+    "name": "admin.update.download",
+    "action": "App\\Http\\Controllers\\UpdateController@download",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "role:super-admin"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/update/install",
+    "name": "admin.update.install",
+    "action": "App\\Http\\Controllers\\UpdateController@install",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "role:super-admin",
+      "throttle:3,1"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "admin/update/upload",
+    "name": "admin.update.upload",
+    "action": "App\\Http\\Controllers\\UpdateController@upload",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "role:super-admin",
+      "throttle:6,1"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/users",
+    "name": "admin.users.view",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "admin/users/list",
+    "name": "admin.users.list",
+    "action": "App\\Http\\Controllers\\UsersManagementController@list",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "admin/users/{user}",
+    "name": "admin.users.delete",
+    "action": "App\\Http\\Controllers\\UsersManagementController@delete",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/users/{user}/email",
+    "name": "admin.users.email",
+    "action": "App\\Http\\Controllers\\UsersManagementController@email",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/users/{user}/nickname",
+    "name": "admin.users.nickname",
+    "action": "App\\Http\\Controllers\\UsersManagementController@nickname",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/users/{user}/password",
+    "name": "admin.users.password",
+    "action": "App\\Http\\Controllers\\UsersManagementController@password",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/users/{user}/permission",
+    "name": "admin.users.permission",
+    "action": "App\\Http\\Controllers\\UsersManagementController@permission",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/users/{user}/score",
+    "name": "admin.users.score",
+    "action": "App\\Http\\Controllers\\UsersManagementController@score",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "admin/users/{user}/verification",
+    "name": "admin.users.verification",
+    "action": "App\\Http\\Controllers\\UsersManagementController@verification",
+    "middleware": [
+      "web",
+      "authorize",
+      "role:admin",
+      "Closure"
+    ]
+  },
+  {
+    "method": "GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY",
+    "uri": "api",
+    "name": null,
+    "action": "App\\Http\\Controllers\\HomeController@apiRoot",
+    "middleware": [
+      "api",
+      "throttle:60,1"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/admin/closet/{user}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\ClosetManagementController@list",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:ClosetManagement.Read,ClosetManagement.ReadWrite"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "api/admin/closet/{user}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\ClosetManagementController@add",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:ClosetManagement.ReadWrite"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/admin/closet/{user}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\ClosetManagementController@remove",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:ClosetManagement.ReadWrite"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "api/admin/notifications",
+    "name": null,
+    "action": "App\\Http\\Controllers\\NotificationsController@send",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:Notification.ReadWrite"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/admin/players",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayersManagementController@list",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:PlayersManagement.Read,PlayersManagement.ReadWrite"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/admin/players/{player}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayersManagementController@delete",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:PlayersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/players/{player}/name",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayersManagementController@name",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:PlayersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/players/{player}/owner",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayersManagementController@owner",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:PlayersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/players/{player}/textures",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayersManagementController@texture",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:PlayersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/admin/reports",
+    "name": null,
+    "action": "App\\Http\\Controllers\\ReportController@manage",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:ReportsManagement.Read,ReportsManagement.ReadWrite"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/reports/{report}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\ReportController@review",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:ReportsManagement.ReadWrite"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/admin/users",
+    "name": "list",
+    "action": "App\\Http\\Controllers\\UsersManagementController@list",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:UsersManagement.Read,UsersManagement.ReadWrite"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/admin/users/{user}",
+    "name": "delete",
+    "action": "App\\Http\\Controllers\\UsersManagementController@delete",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:UsersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/users/{user}/email",
+    "name": "email",
+    "action": "App\\Http\\Controllers\\UsersManagementController@email",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:UsersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/users/{user}/nickname",
+    "name": "nickname",
+    "action": "App\\Http\\Controllers\\UsersManagementController@nickname",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:UsersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/users/{user}/password",
+    "name": "password",
+    "action": "App\\Http\\Controllers\\UsersManagementController@password",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:UsersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/users/{user}/permission",
+    "name": "permission",
+    "action": "App\\Http\\Controllers\\UsersManagementController@permission",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:UsersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/users/{user}/score",
+    "name": "score",
+    "action": "App\\Http\\Controllers\\UsersManagementController@score",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:UsersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/admin/users/{user}/verification",
+    "name": "verification",
+    "action": "App\\Http\\Controllers\\UsersManagementController@verification",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "role:admin",
+      "scope:UsersManagement.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/closet",
+    "name": null,
+    "action": "App\\Http\\Controllers\\ClosetController@getClosetData",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Closet.Read,Closet.ReadWrite"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "api/closet",
+    "name": null,
+    "action": "App\\Http\\Controllers\\ClosetController@add",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Closet.ReadWrite"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/closet/{tid}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\ClosetController@rename",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Closet.ReadWrite"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/closet/{tid}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\ClosetController@remove",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Closet.ReadWrite"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/players",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayerController@list",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Player.Read,Player.ReadWrite"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "api/players",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayerController@add",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Player.ReadWrite"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/players/{player}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayerController@delete",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Player.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/players/{player}/name",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayerController@rename",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Player.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "api/players/{player}/textures",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayerController@setTexture",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Player.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/players/{player}/textures",
+    "name": null,
+    "action": "App\\Http\\Controllers\\PlayerController@clearTexture",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Player.ReadWrite",
+      "Closure"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/user",
+    "name": null,
+    "action": "App\\Http\\Controllers\\UserController@user",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:User.Read"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/user/notifications",
+    "name": null,
+    "action": "App\\Http\\Controllers\\NotificationsController@all",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Notification.Read"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "api/user/notifications/{id}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\NotificationsController@read",
+    "middleware": [
+      "api",
+      "throttle:60,1",
+      "auth:oauth",
+      "scope:Notification.Read"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "auth/bind",
+    "name": "auth.bind.view",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "authorize",
+      "App\\Http\\Middleware\\EnsureEmailFilled"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "auth/bind",
+    "name": "auth.bind.verify",
+    "action": "App\\Http\\Controllers\\AuthController@fillEmail",
+    "middleware": [
+      "web",
+      "authorize",
+      "App\\Http\\Middleware\\EnsureEmailFilled"
+    ]
+  },
+  {
+    "method": "GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY",
+    "uri": "auth/captcha",
+    "name": "auth.captcha",
+    "action": "App\\Http\\Controllers\\AuthController@captcha",
+    "middleware": [
+      "web"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "auth/forgot",
+    "name": "auth.forgot",
+    "action": "App\\Http\\Controllers\\AuthController@forgot",
+    "middleware": [
+      "web",
+      "guest"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "auth/forgot",
+    "name": "auth.handle.forgot",
+    "action": "App\\Http\\Controllers\\AuthController@handleForgot",
+    "middleware": [
+      "web",
+      "guest"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "auth/login",
+    "name": "auth.login",
+    "action": "App\\Http\\Controllers\\AuthController@login",
+    "middleware": [
+      "web",
+      "guest"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "auth/login",
+    "name": "auth.handle.login",
+    "action": "App\\Http\\Controllers\\AuthController@handleLogin",
+    "middleware": [
+      "web",
+      "guest"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "auth/logout",
+    "name": "auth.logout",
+    "action": "App\\Http\\Controllers\\AuthController@logout",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "auth/register",
+    "name": "auth.register",
+    "action": "App\\Http\\Controllers\\AuthController@register",
+    "middleware": [
+      "web",
+      "guest"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "auth/register",
+    "name": "auth.handle.register",
+    "action": "App\\Http\\Controllers\\AuthController@handleRegister",
+    "middleware": [
+      "web",
+      "guest"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "auth/reset/{uid}",
+    "name": "auth.reset",
+    "action": "App\\Http\\Controllers\\AuthController@reset",
+    "middleware": [
+      "web",
+      "guest"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "auth/reset/{uid}",
+    "name": "auth.handle.reset",
+    "action": "App\\Http\\Controllers\\AuthController@handleReset",
+    "middleware": [
+      "web",
+      "guest"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "auth/verify/{user}",
+    "name": "auth.verify",
+    "action": "App\\Http\\Controllers\\AuthController@verify",
+    "middleware": [
+      "web"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "auth/verify/{user}",
+    "name": "auth.handle.verify",
+    "action": "App\\Http\\Controllers\\AuthController@handleVerify",
+    "middleware": [
+      "web"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "avatar/hash/{hash}",
+    "name": "avatar.hash",
+    "action": "App\\Http\\Controllers\\TextureController@avatarByHash",
+    "middleware": []
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "avatar/player/{name}",
+    "name": "avatar.player",
+    "action": "App\\Http\\Controllers\\TextureController@avatarByPlayer",
+    "middleware": [
+      "cache.headers:etag;public;max_age=31536000"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "avatar/user/{uid}",
+    "name": "avatar.user",
+    "action": "App\\Http\\Controllers\\TextureController@avatarByUser",
+    "middleware": [
+      "cache.headers:etag;public;max_age=31536000"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "avatar/{tid}",
+    "name": "avatar.texture",
+    "action": "App\\Http\\Controllers\\TextureController@avatarByTexture",
+    "middleware": [
+      "cache.headers:etag;public;max_age=31536000"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "csl/textures/{hash}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\TextureController@texture",
+    "middleware": [
+      "cache.headers:etag;public;max_age=31536000"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "csl/{player}.json",
+    "name": null,
+    "action": "App\\Http\\Controllers\\TextureController@json",
+    "middleware": [
+      "cache.headers:public;max_age=31536000"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "oauth/authorize",
+    "name": "passport.authorizations.authorize",
+    "action": "Laravel\\Passport\\Http\\Controllers\\AuthorizationController@authorize",
+    "middleware": [
+      "web",
+      "auth",
+      "verified"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "oauth/authorize",
+    "name": "passport.authorizations.approve",
+    "action": "Laravel\\Passport\\Http\\Controllers\\ApproveAuthorizationController@approve",
+    "middleware": [
+      "web",
+      "auth:web",
+      "auth",
+      "verified"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "oauth/authorize",
+    "name": "passport.authorizations.deny",
+    "action": "Laravel\\Passport\\Http\\Controllers\\DenyAuthorizationController@deny",
+    "middleware": [
+      "web",
+      "auth:web",
+      "auth",
+      "verified"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "oauth/clients",
+    "name": "passport.clients.index",
+    "action": "Laravel\\Passport\\Http\\Controllers\\ClientController@forUser",
+    "middleware": [
+      "web",
+      "auth:web",
+      "auth",
+      "verified"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "oauth/clients",
+    "name": "passport.clients.store",
+    "action": "Laravel\\Passport\\Http\\Controllers\\ClientController@store",
+    "middleware": [
+      "web",
+      "auth:web",
+      "auth",
+      "verified"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "oauth/clients/{client_id}",
+    "name": "passport.clients.update",
+    "action": "Laravel\\Passport\\Http\\Controllers\\ClientController@update",
+    "middleware": [
+      "web",
+      "auth:web",
+      "auth",
+      "verified"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "oauth/clients/{client_id}",
+    "name": "passport.clients.destroy",
+    "action": "Laravel\\Passport\\Http\\Controllers\\ClientController@destroy",
+    "middleware": [
+      "web",
+      "auth:web",
+      "auth",
+      "verified"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "oauth/personal-access-tokens",
+    "name": "passport.personal.tokens.index",
+    "action": "Laravel\\Passport\\Http\\Controllers\\PersonalAccessTokenController@forUser",
+    "middleware": [
+      "web",
+      "auth:web"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "oauth/personal-access-tokens",
+    "name": "passport.personal.tokens.store",
+    "action": "Laravel\\Passport\\Http\\Controllers\\PersonalAccessTokenController@store",
+    "middleware": [
+      "web",
+      "auth:web"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "oauth/personal-access-tokens/{token_id}",
+    "name": "passport.personal.tokens.destroy",
+    "action": "Laravel\\Passport\\Http\\Controllers\\PersonalAccessTokenController@destroy",
+    "middleware": [
+      "web",
+      "auth:web"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "oauth/scopes",
+    "name": "passport.scopes.index",
+    "action": "Laravel\\Passport\\Http\\Controllers\\ScopeController@all",
+    "middleware": [
+      "web",
+      "auth:web"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "oauth/token",
+    "name": "passport.token",
+    "action": "Laravel\\Passport\\Http\\Controllers\\AccessTokenController@issueToken",
+    "middleware": [
+      "throttle"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "oauth/token/refresh",
+    "name": "passport.token.refresh",
+    "action": "Laravel\\Passport\\Http\\Controllers\\TransientTokenController@refresh",
+    "middleware": [
+      "web",
+      "auth:web"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "oauth/tokens",
+    "name": "passport.tokens.index",
+    "action": "Laravel\\Passport\\Http\\Controllers\\AuthorizedAccessTokenController@forUser",
+    "middleware": [
+      "web",
+      "auth:web",
+      "auth",
+      "verified"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "oauth/tokens/{token_id}",
+    "name": "passport.tokens.destroy",
+    "action": "Laravel\\Passport\\Http\\Controllers\\AuthorizedAccessTokenController@destroy",
+    "middleware": [
+      "web",
+      "auth:web",
+      "auth",
+      "verified"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "preview/hash/{hash}",
+    "name": "preview.hash",
+    "action": "App\\Http\\Controllers\\TextureController@previewByHash",
+    "middleware": []
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "preview/{texture}",
+    "name": "preview.texture",
+    "action": "App\\Http\\Controllers\\TextureController@preview",
+    "middleware": [
+      "Illuminate\\Routing\\Middleware\\SubstituteBindings",
+      "cache.headers:etag;public;max_age=31536000"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "raw/{tid}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\TextureController@raw",
+    "middleware": [
+      "cache.headers:etag;public;max_age=31536000"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "setup",
+    "name": "setup.view",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "setup"
+    ]
+  },
+  {
+    "method": "GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY",
+    "uri": "setup/database",
+    "name": "setup.database",
+    "action": "App\\Http\\Controllers\\SetupController@database",
+    "middleware": [
+      "web",
+      "setup"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "setup/finish",
+    "name": "setup.finish",
+    "action": "App\\Http\\Controllers\\SetupController@finish",
+    "middleware": [
+      "web",
+      "setup"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "setup/info",
+    "name": "setup.info",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "setup"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "skinlib",
+    "name": "skinlib.home",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "skinlib",
+    "name": "skinlib.upload.submit",
+    "action": "App\\Http\\Controllers\\SkinlibController@handleUpload",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "skinlib/info/{texture}",
+    "name": "skinlib.info",
+    "action": "App\\Http\\Controllers\\SkinlibController@info",
+    "middleware": [
+      "web",
+      "Closure"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "skinlib/list",
+    "name": "skinlib.list",
+    "action": "App\\Http\\Controllers\\SkinlibController@library",
+    "middleware": [
+      "web"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "skinlib/report",
+    "name": "skinlib.report",
+    "action": "App\\Http\\Controllers\\ReportController@submit",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "skinlib/show/{texture}",
+    "name": "skinlib.show",
+    "action": "App\\Http\\Controllers\\SkinlibController@show",
+    "middleware": [
+      "web",
+      "Closure"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "skinlib/upload",
+    "name": "skinlib.upload",
+    "action": "App\\Http\\Controllers\\SkinlibController@upload",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "texture",
+    "name": "texture.upload",
+    "action": "App\\Http\\Controllers\\SkinlibController@handleUpload",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "texture/{texture}",
+    "name": "texture.info",
+    "action": "App\\Http\\Controllers\\SkinlibController@info",
+    "middleware": [
+      "web",
+      "Closure"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "texture/{texture}",
+    "name": "texture.delete",
+    "action": "App\\Http\\Controllers\\SkinlibController@delete",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "texture/{texture}/name",
+    "name": "texture.name",
+    "action": "App\\Http\\Controllers\\SkinlibController@rename",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "texture/{texture}/privacy",
+    "name": "texture.privacy",
+    "action": "App\\Http\\Controllers\\SkinlibController@privacy",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "texture/{texture}/type",
+    "name": "texture.type",
+    "action": "App\\Http\\Controllers\\SkinlibController@type",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified",
+      "Closure"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "textures/{hash}",
+    "name": null,
+    "action": "App\\Http\\Controllers\\TextureController@texture",
+    "middleware": [
+      "cache.headers:etag;public;max_age=31536000"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user",
+    "name": "user.home",
+    "action": "App\\Http\\Controllers\\UserController@index",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/closet",
+    "name": "user.closet.view",
+    "action": "App\\Http\\Controllers\\ClosetController@index",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "user/closet",
+    "name": "user.closet.add",
+    "action": "App\\Http\\Controllers\\ClosetController@add",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/closet/ids",
+    "name": "user.closet.ids",
+    "action": "App\\Http\\Controllers\\ClosetController@allIds",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/closet/list",
+    "name": "user.closet.list",
+    "action": "App\\Http\\Controllers\\ClosetController@getClosetData",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "user/closet/{tid}",
+    "name": "user.closet.rename",
+    "action": "App\\Http\\Controllers\\ClosetController@rename",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "user/closet/{tid}",
+    "name": "user.closet.remove",
+    "action": "App\\Http\\Controllers\\ClosetController@remove",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "user/dark-mode",
+    "name": "user.dark-mode",
+    "action": "App\\Http\\Controllers\\UserController@toggleDarkMode",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "user/email-verification",
+    "name": "user.email-verification",
+    "action": "App\\Http\\Controllers\\UserController@sendVerificationEmail",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/inbox",
+    "name": "user.inbox",
+    "action": "App\\Http\\Controllers\\CommunicationsController@inbox",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/inbox/{id}",
+    "name": "user.inbox.message",
+    "action": "App\\Http\\Controllers\\CommunicationsController@message",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "user/notifications/{id}",
+    "name": "user.notification.read",
+    "action": "App\\Http\\Controllers\\NotificationsController@read",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/oauth/manage",
+    "name": "user.",
+    "action": "Illuminate\\Routing\\ViewController",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/player",
+    "name": "user.player.view",
+    "action": "App\\Http\\Controllers\\PlayerController@index",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "user/player",
+    "name": "user.player.add",
+    "action": "App\\Http\\Controllers\\PlayerController@add",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/player/list",
+    "name": "user.player.list",
+    "action": "App\\Http\\Controllers\\PlayerController@list",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "user/player/{player}",
+    "name": "user.player.delete",
+    "action": "App\\Http\\Controllers\\PlayerController@delete",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "user/player/{player}/name",
+    "name": "user.player.rename",
+    "action": "App\\Http\\Controllers\\PlayerController@rename",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified",
+      "Closure"
+    ]
+  },
+  {
+    "method": "PUT",
+    "uri": "user/player/{player}/textures",
+    "name": "user.player.set",
+    "action": "App\\Http\\Controllers\\PlayerController@setTexture",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified",
+      "Closure"
+    ]
+  },
+  {
+    "method": "DELETE",
+    "uri": "user/player/{player}/textures",
+    "name": "user.player.clear",
+    "action": "App\\Http\\Controllers\\PlayerController@clearTexture",
+    "middleware": [
+      "web",
+      "authorize",
+      "verified",
+      "Closure"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/profile",
+    "name": "user.profile.view",
+    "action": "App\\Http\\Controllers\\UserController@profile",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "user/profile",
+    "name": "user.profile.handle.profile",
+    "action": "App\\Http\\Controllers\\UserController@handleProfile",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "user/profile/avatar",
+    "name": "user.profile.avatar",
+    "action": "App\\Http\\Controllers\\UserController@setAvatar",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/reports",
+    "name": "user.list",
+    "action": "App\\Http\\Controllers\\ReportController@track",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "user/score-info",
+    "name": "user.score",
+    "action": "App\\Http\\Controllers\\UserController@scoreInfo",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "POST",
+    "uri": "user/sign",
+    "name": "user.sign",
+    "action": "App\\Http\\Controllers\\UserController@sign",
+    "middleware": [
+      "web",
+      "authorize"
+    ]
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "{player}.json",
+    "name": null,
+    "action": "App\\Http\\Controllers\\TextureController@json",
+    "middleware": [
+      "cache.headers:public;max_age=31536000"
+    ]
+  }
+]

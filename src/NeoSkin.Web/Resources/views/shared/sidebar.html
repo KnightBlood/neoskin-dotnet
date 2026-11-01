@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.sidebar：左侧栏（scope=user/admin） -->
+<aside th:fragment="shared-sidebar" class="main-sidebar elevation-3"
+       th:classappend="|sidebar-${sidebar_color}|">
+  <a th:href="${view.url('/')}" class="brand-link text-center">
+    <span class="brand-text font-weight-light" th:text="${site_name}"></span>
+  </a>
+  <div class="sidebar">
+    <th:block th:replace="~{shared/user-panel :: shared-user-panel}"></th:block>
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent"
+          data-widget="treeview" role="menu">
+
+        <th:block th:if="${scope == 'user'}">
+          <li class="nav-header" th:text="${view.trans('general.user-center')}"></li>
+          <th:block th:each="item : ${userItems}">
+            <th:block th:replace="~{shared/side-menu-item :: shared-side-menu-item(${item})}"></th:block>
+          </th:block>
+          <li class="nav-header" th:text="${view.trans('general.explore')}"></li>
+          <th:block th:each="item : ${exploreItems}">
+            <th:block th:replace="~{shared/side-menu-item :: shared-side-menu-item(${item})}"></th:block>
+          </th:block>
+          <th:block th:if="${view.authCheck() and view.authUser().isAdmin()}">
+            <li class="nav-header" th:text="${view.trans('general.manage')}"></li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="${view.url('admin')}">
+                <i class="nav-icon fas fa-cog"></i>
+                <p th:text="${view.trans('general.admin-panel')}"></p>
+              </a>
+            </li>
+          </th:block>
+        </th:block>
+
+        <th:block th:if="${scope == 'admin'}">
+          <li class="nav-header" th:text="${view.trans('general.admin-panel')}"></li>
+          <th:block th:each="item : ${adminItems}">
+            <th:block th:replace="~{shared/side-menu-item :: shared-side-menu-item(${item})}"></th:block>
+          </th:block>
+          <li class="nav-header" th:text="${view.trans('general.back')}"></li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="${view.url('user')}">
+              <i class="nav-icon fas fa-user"></i> &nbsp;
+              <p th:text="${view.trans('general.user-center')}"></p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="${view.url('skinlib')}">
+              <i class="nav-icon fas fa-archive"></i> &nbsp;
+              <p th:text="${view.trans('general.skinlib')}"></p>
+            </a>
+          </li>
+        </th:block>
+
+      </ul>
+    </nav>
+  </div>
+</aside>
+</body>
+</html>

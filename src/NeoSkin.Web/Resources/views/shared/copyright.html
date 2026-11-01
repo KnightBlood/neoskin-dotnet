@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  shared.copyright：版权行。
+  源用 {% if copyright == 0 %}…{% elseif %}…{% else %}…{% endif %} 七分支，
+  Thymeleaf 里用 th:switch / th:case 一一对应；{% else %} → th:case="*"。
+  末尾 custom_copyright|replace(rules)|raw：把 {site_name}/{site_url} 替换掉后原样输出，
+  放版权变量替换在 composer 里做（见 CopyrightComposer），这里直接 utext。
+-->
+<div th:fragment="shared-copyright" id="copyright-text" class="float-right d-none d-sm-inline">
+  <!-- YOU CAN NOT MODIFIY THE COPYRIGHT TEXT W/O PERMISSION -->
+  <th:block th:switch="${copyright}">
+    <th:block th:case="0">Powered with ❤ by <a href="https://github.com/bs-community/blessing-skin-server" target="_blank">Blessing Skin Server</a>.</th:block>
+    <th:block th:case="1">Powered by <a href="https://github.com/bs-community/blessing-skin-server" target="_blank">Blessing Skin Server</a>.</th:block>
+    <th:block th:case="2">Proudly powered by <a href="https://github.com/bs-community/blessing-skin-server" target="_blank">Blessing Skin Server</a>.</th:block>
+    <th:block th:case="3">由 <a href="https://github.com/bs-community/blessing-skin-server" target="_blank">Blessing Skin Server</a> 强力驱动。</th:block>
+    <th:block th:case="4">采用 <a href="https://github.com/bs-community/blessing-skin-server" target="_blank">Blessing Skin Server</a> 搭建。</th:block>
+    <th:block th:case="5">使用 <a href="https://github.com/bs-community/blessing-skin-server" target="_blank">Blessing Skin Server</a> 稳定运行。</th:block>
+    <th:block th:case="*">自豪地采用 <a href="https://github.com/bs-community/blessing-skin-server" target="_blank">Blessing Skin Server</a>。</th:block>
+  </th:block>
+</div>
+<!-- custom_copyright：{site_name} / {site_url} 已在 composer 里替换 -->
+<th:block th:if="${custom_copyright}" th:utext="${custom_copyright}"></th:block>
+</body>
+</html>

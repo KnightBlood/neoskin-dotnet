@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NeoSkin.Web/NeoSkin.Web.csproj" />
+    <Project Path="src/NeoSkin.Plugin.Abstractions/NeoSkin.Plugin.Abstractions.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NeoSkin.Tests/NeoSkin.Tests.csproj" />
+  </Folder>
+</Solution>

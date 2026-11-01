@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{skinlib/base :: page(${pageTitle}, ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div class="content-wrapper">
+    <div class="container">
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="d-flex justify-content-between flex-wrap">
+            <div>
+              <h1 class="m-0" th:text="${view.trans('skinlib.show.title')}"></h1>
+            </div>
+            <div>
+              <div class="breadcrumb"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="content">
+        <div class="container-fluid">
+          <th:block th:replace="~{shared/grid :: grid(${gridRows})}"></th:block>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="modals"></div>
+</th:block>
+
+<th:block th:fragment="before-foot">
+  <script id="blessing-extra" type="application/json" th:utext="${extra_json}"></script>
+</th:block>
+</body>
+</html>

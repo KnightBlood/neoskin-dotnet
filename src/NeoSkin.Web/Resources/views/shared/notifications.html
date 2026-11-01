@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.notifications：未读站内信（notifications_json 由后端 json_encode） -->
+<li th:fragment="shared-notifications" class="nav-item dropdown"
+    th:attr="data-t=${view.trans('user.no-unread')},data-notifications=${notifications_json}">
+</li>
+</body>
+</html>

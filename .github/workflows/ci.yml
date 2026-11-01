@@ -1,0 +1,159 @@
+name: CI — DB matrix & Native AOT
+
+# 对应 AGENTS.md 的验证清单：sqlite / mysql / mariadb / pgsql / sqlsrv 各跑一遍
+# `dotnet test`，并额外验证 linux-x64 的 Native AOT 发布。
+# 与 Java 版 `.github/workflows/ci.yml` 的矩阵保持一致（数据库镜像/凭据相同）。
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Test (${{ matrix.database }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        database: [ sqlite, mysql, mariadb, pgsql, sqlsrv ]
+
+    env:
+      DB_CONNECTION: ${{ matrix.database }}
+      DB_HOST: 127.0.0.1
+      DB_DATABASE: blessing_skin
+      DOTNET_NOLOGO: '1'
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore NeoSkin.NET.slnx
+
+      # ------------------------------------------------ MySQL / MariaDB ----
+      - name: Start MySQL
+        if: matrix.database == 'mysql'
+        run: |
+          docker run -d --name neoskin-db \
+            -e MYSQL_ROOT_PASSWORD=123456 \
+            -e MYSQL_DATABASE=blessing_skin \
+            -e MYSQL_USER=blessing -e MYSQL_PASSWORD=123456 \
+            -p 3306:3306 mysql:8 \
+            --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+          for i in $(seq 1 60); do
+            docker exec neoskin-db mysqladmin --protocol=tcp -h 127.0.0.1 \
+              -u root --password=123456 ping && break
+            sleep 2
+          done
+        shell: bash
+
+      - name: Start MariaDB
+        if: matrix.database == 'mariadb'
+        run: |
+          docker run -d --name neoskin-db \
+            -e MARIADB_ROOT_PASSWORD=123456 \
+            -e MARIADB_DATABASE=blessing_skin \
+            -e MARIADB_USER=blessing -e MARIADB_PASSWORD=123456 \
+            -p 3306:3306 mariadb:11 \
+            --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+          for i in $(seq 1 60); do
+            docker exec neoskin-db mariadb-admin --protocol=tcp -h 127.0.0.1 \
+              -u root --password=123456 ping && break
+            sleep 2
+          done
+        shell: bash
+
+      # ---------------------------------------------------- PostgreSQL ----
+      - name: Start PostgreSQL
+        if: matrix.database == 'pgsql'
+        run: |
+          docker run -d --name neoskin-db \
+            -e POSTGRES_PASSWORD=123456 \
+            -e POSTGRES_DB=blessing_skin \
+            -p 5432:5432 postgres:16
+          for i in $(seq 1 60); do
+            docker exec neoskin-db pg_isready -U postgres && break
+            sleep 2
+          done
+        shell: bash
+
+      # ----------------------------------------------------- SQL Server ----
+      - name: Start SQL Server
+        if: matrix.database == 'sqlsrv'
+        env:
+          SA_BOOTSTRAP_PASSWORD: 'Bootstrap_SA!2026'
+          APP_SA_PASSWORD: '123456'
+        run: |
+          docker run -d --name neoskin-db \
+            -e ACCEPT_EULA=Y \
+            -e MSSQL_SA_PASSWORD="$SA_BOOTSTRAP_PASSWORD" \
+            -e MSSQL_PID=Developer \
+            -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+          for i in $(seq 1 90); do
+            docker exec neoskin-db /opt/mssql-tools18/bin/sqlcmd \
+              -C -S localhost -U sa -P "$SA_BOOTSTRAP_PASSWORD" \
+              -Q 'SELECT 1' -l 1 && break
+            sleep 2
+          done
+          docker exec neoskin-db /opt/mssql-tools18/bin/sqlcmd \
+            -C -S localhost -U sa -P "$SA_BOOTSTRAP_PASSWORD" \
+            -Q "CREATE DATABASE blessing_skin;
+                CREATE LOGIN blessing WITH PASSWORD = '$APP_SA_PASSWORD', CHECK_POLICY = OFF;
+                ALTER SERVER ROLE sysadmin ADD MEMBER blessing;"
+          echo "DB_PORT=1433"                      >> "$GITHUB_ENV"
+          echo "DB_USERNAME=blessing"              >> "$GITHUB_ENV"
+          echo "DB_PASSWORD=123456"                >> "$GITHUB_ENV"
+          echo "DB_ENCRYPT=false"                  >> "$GITHUB_ENV"
+          echo "DB_TRUST_SERVER_CERTIFICATE=true"  >> "$GITHUB_ENV"
+        shell: bash
+
+      - name: Configure non-SQL-Server credentials
+        if: matrix.database != 'sqlsrv'
+        run: |
+          case "${{ matrix.database }}" in
+            mysql|mariadb)
+              echo "DB_PORT=3306"         >> "$GITHUB_ENV"
+              echo "DB_USERNAME=blessing" >> "$GITHUB_ENV"
+              echo "DB_PASSWORD=123456"   >> "$GITHUB_ENV" ;;
+            pgsql)
+              echo "DB_PORT=5432"         >> "$GITHUB_ENV"
+              echo "DB_USERNAME=postgres" >> "$GITHUB_ENV"
+              echo "DB_PASSWORD=123456"   >> "$GITHUB_ENV" ;;
+            sqlite)
+              echo "DB_PORT="             >> "$GITHUB_ENV"
+              echo "DB_USERNAME="         >> "$GITHUB_ENV"
+              echo "DB_PASSWORD="         >> "$GITHUB_ENV" ;;
+          esac
+        shell: bash
+
+      - name: dotnet test
+        run: dotnet test NeoSkin.NET.slnx -c Release --no-restore
+
+  publish-aot:
+    name: Native AOT (linux-x64)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install AOT prerequisites
+        run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
+
+      - name: Publish
+        run: dotnet publish src/NeoSkin.Web -c Release -r linux-x64 -o publish
+
+      - name: Smoke check binary
+        run: |
+          test -x publish/neoskin
+          ls -lh publish/neoskin

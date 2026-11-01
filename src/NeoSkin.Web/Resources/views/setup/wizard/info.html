@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{setup/base :: page(${view.trans('setup.wizard.info.title')}, ~{::content})}">
+<body>
+<th:block th:fragment="content">
+  <p th:text="${view.trans('setup.wizard.info.text')}"></p>
+  <form id="setup" method="post" th:action="${view.url('setup/finish')}"
+        novalidate="novalidate">
+    <th:block th:utext="${view.csrfField()}"></th:block>
+    <table>
+      <tr class="form-group">
+        <th><label class="form-label" for="email"
+                   th:text="${view.trans('setup.wizard.info.admin-email')}"></label></th>
+        <td><input class="form-input" name="email" type="email" id="email" size="25"></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td><p><small th:text="${view.trans('setup.wizard.info.admin-notice')}"></small></p></td>
+      </tr>
+      <tr class="form-group">
+        <th><label class="form-label" for="nickname"
+                   th:text="${view.trans('setup.wizard.info.nickname')}"></label></th>
+        <td><input class="form-input my-2" name="nickname" type="text" id="nickname"
+                   size="25"></td>
+      </tr>
+      <tr class="form-group">
+        <th><label class="form-label" for="password"
+                   th:text="${view.trans('setup.wizard.info.password')}"></label></th>
+        <td><input class="form-input" type="password" name="password" id="password"></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td><p><small th:text="${view.trans('setup.wizard.info.pwd-notice')}"></small></p></td>
+      </tr>
+      <tr class="form-group">
+        <th><label class="form-label" for="password_confirmation"
+                   th:text="${view.trans('setup.wizard.info.confirm-pwd')}"></label></th>
+        <td><input class="form-input my-2" type="password" name="password_confirmation"
+                   id="password_confirmation"></td>
+      </tr>
+      <tr class="form-group">
+        <th><label class="form-label" for="site_name"
+                   th:text="${view.trans('setup.wizard.info.site-name')}"></label></th>
+        <td><input class="form-input" name="site_name" type="text" id="site_name"
+                   size="25" th:value="${site_name}"></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td><p><small th:text="${view.trans('setup.wizard.info.site-name-notice')}"></small></p></td>
+      </tr>
+    </table>
+
+    <div th:if="${errors.any()}" class="toast toast-error" role="alert">
+      <ul>
+        <li th:each="error : ${errors.all()}" th:text="${error}"></li>
+      </ul>
+    </div>
+
+    <p class="step">
+      <input type="submit" name="submit" id="submit" class="btn btn-primary"
+             th:value="${view.trans('setup.wizard.info.button')}">
+    </p>
+  </form>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: page(${pageTitle}, ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="callout callout-warning" th:text="${view.trans('options.res-warning')}"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <th:block th:utext="${forms.resources}"></th:block>
+    </div>
+    <div class="col-md-6">
+      <th:block th:utext="${forms.cache}"></th:block>
+    </div>
+  </div>
+</th:block>
+
+<th:block th:fragment="before-foot">
+</th:block>
+</body>
+</html>

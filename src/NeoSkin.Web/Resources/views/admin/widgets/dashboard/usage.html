@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="widget">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="small-box bg-info">
+        <div class="inner">
+          <h3 class="stats" th:text="${sum.users}"></h3>
+          <p th:text="${view.trans('admin.index.total-users')}"></p>
+        </div>
+        <div class="icon"><i class="fas fa-users"></i></div>
+        <a th:href="${view.url('admin/users')}" class="small-box-footer">
+          <th:block th:text="${view.trans('general.user-manage')}"></th:block>&nbsp;
+          <i class="fa fa-arrow-circle-right"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="small-box bg-green">
+        <div class="inner">
+          <h3 class="stats" th:text="${sum.players}"></h3>
+          <p th:text="${view.trans('admin.index.total-players')}"></p>
+        </div>
+        <div class="icon"><i class="fas fa-gamepad"></i></div>
+        <a th:href="${view.url('admin/players')}" class="small-box-footer">
+          <th:block th:text="${view.trans('general.player-manage')}"></th:block>&nbsp;
+          <i class="fa fa-arrow-circle-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="small-box bg-purple">
+        <div class="inner">
+          <h3 class="stats" th:text="${sum.textures}"></h3>
+          <p th:text="${view.trans('admin.index.total-textures')}"></p>
+        </div>
+        <div class="icon"><i class="fas fa-file"></i></div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="small-box bg-yellow">
+        <div class="inner">
+          <h3 class="stats" th:text="${sum_storage_display}"></h3>
+          <p th:text="${view.trans('admin.index.disk-usage')}"></p>
+        </div>
+        <div class="icon"><i class="fas fa-hdd"></i></div>
+      </div>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>

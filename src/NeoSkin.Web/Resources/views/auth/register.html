@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{auth/base :: page(~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <th:block th:each="row : ${rows}">
+    <th:block th:replace="~{__${row}__ :: row}"></th:block>
+  </th:block>
+</th:block>
+
+<th:block th:fragment="before-foot">
+  <script id="blessing-extra" type="application/json" th:utext="${extra}"></script>
+</th:block>
+</body>
+</html>

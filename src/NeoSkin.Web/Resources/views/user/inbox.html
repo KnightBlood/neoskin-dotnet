@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/base :: page('站内信', ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div class="card card-outline card-info">
+    <div class="card-header"><h2 class="card-title">站内信</h2></div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead><tr><th>标题</th><th>状态</th><th>时间</th></tr></thead>
+        <tbody>
+          <tr th:each="item : ${messages['items']}">
+            <td><a th:href="${item['message_url']}" th:text="${item['display_title']}"></a></td>
+            <td th:text="${item['read_at'] != null ? '已读' : '未读'}"></td>
+            <td th:text="${item['created_at']}"></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(messages['items'])}"><td colspan="3">暂无站内信。</td></tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-between">
+        <span th:text="|共 ${messages['total']} 条|"></span>
+        <div>
+          <a th:if="${messages['previous_page_url'] != null}" class="btn btn-light"
+             th:href="${messages['previous_page_url']}">上一页</a>
+          <a th:if="${messages['next_page_url'] != null}" class="btn btn-light"
+             th:href="${messages['next_page_url']}">下一页</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</th:block>
+<th:block th:fragment="before-foot"></th:block>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.user-menu：已登录用户的右上角菜单（UserMenuComposer 提供 user/avatar/avatar_png/menu） -->
+<li th:fragment="shared-user-menu" class="nav-item dropdown user-menu">
+  <a href="#" class="nav-link d-flex align-items-center" data-toggle="dropdown">
+    <picture>
+      <source th:srcset="${avatar}" type="image/webp">
+      <img th:src="${avatar_png}" class="bs-avatar mr-2" alt="User Image">
+    </picture>
+    <span class="d-none d-md-inline d-sm-block" data-mark="nickname"
+          th:text="${user_nickname}"></span>
+  </a>
+
+  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+    <th:block th:each="item : ${menu}">
+      <div th:if="${item['link'] == '#divider'}" class="dropdown-divider"></div>
+      <a th:unless="${item['link'] == '#divider'}" class="dropdown-item"
+         th:href="${item['link']}" th:text="${item['label']}"></a>
+    </th:block>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="#" id="logout-button" th:text="${view.trans('general.logout')}"></a>
+  </div>
+</li>
+</body>
+</html>

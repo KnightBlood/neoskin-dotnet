@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.side-menu-item：递归渲染菜单项 -->
+<li th:fragment="shared-side-menu-item(item)" class="nav-item"
+    th:classappend="${#strings.listJoin(item['classes'], ' ')}">
+  <th:block th:if="${item['children']}">
+    <a class="nav-link" th:classappend="${item['active'] ? 'active' : ''}" href="#">
+      <i class="nav-icon fas" th:classappend="${item['icon']}"></i>
+      <p class="ml-1" th:text="${view.trans(item['title'])}"></p>
+      <i class="right fas fa-angle-left"></i>
+    </a>
+    <ul class="nav nav-treeview">
+      <th:block th:each="child : ${item['children']}">
+        <th:block th:replace="~{shared/side-menu-item :: shared-side-menu-item(${child})}"></th:block>
+      </th:block>
+    </ul>
+  </th:block>
+  <a th:unless="${item['children']}" th:href="${view.url(item['link'])}" class="nav-link"
+     th:classappend="${item['active'] ? 'active' : ''}">
+    <i class="nav-icon"
+       th:classappend="${item['iconClass']}"></i>
+    <p class="ml-1" th:text="${view.trans(item['title'])}"></p>
+  </a>
+</li>
+</body>
+</html>

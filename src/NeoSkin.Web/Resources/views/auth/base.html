@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="page(content, beforeFoot)"
+      th:lang="${locale}">
+<head>
+  <th:block th:replace="~{shared/head :: shared-head}"></th:block>
+  <title th:text="|${pageTitle} - ${site_name}|"></title>
+</head>
+
+<body class="hold-transition login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <a th:href="${view.url('/')}" th:text="${site_name}"></a>
+    </div>
+
+    <div class="card">
+      <div class="card-body login-card-body">
+        <th:block th:replace="${content}"></th:block>
+      </div>
+    </div>
+  </div>
+
+  <th:block th:replace="${beforeFoot}"></th:block>
+  <th:block th:replace="~{shared/foot :: shared-foot}"></th:block>
+</body>
+</html>

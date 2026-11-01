@@ -1,0 +1,7 @@
+{
+  "name": "NeoSkin.Plugin.Sample",
+  "title": "Native Plugin Sample",
+  "description": "最小原生插件示例：注册一个 user_badges 徽章。",
+  "version": "1.0.0",
+  "native": "NeoSkin.Plugin.Sample.dll"
+}

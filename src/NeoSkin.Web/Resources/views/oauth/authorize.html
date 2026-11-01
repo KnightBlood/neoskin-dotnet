@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${locale}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <meta name="robots" content="noindex,nofollow">
+  <title>授权</title>
+</head>
+<body>
+<h1>授权应用</h1>
+<p>「<span th:text="${client['name']}"></span>」请求访问你的账号（<span th:text="${user}"></span>）。</p>
+<ul>
+  <li th:each="scope : ${scopes}">
+    <strong th:text="${scope['id']}"></strong>：<span th:text="${scope['description']}"></span>
+  </li>
+</ul>
+<form method="post" th:action="${approve_url}">
+  <input type="hidden" name="auth_token" th:value="${auth_token}">
+  <button type="submit">授权</button>
+  <button type="button"
+          onclick="fetch('', {method:'DELETE'}).then(() => location.reload())">拒绝</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="widget">
+  <div class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title" th:text="${view.trans('user.profile.avatar.title')}"></h3>
+    </div>
+    <div class="card-body" th:utext="${view.trans('user.profile.avatar.notice')}"></div>
+    <div class="card-footer">
+      <button class="btn btn-primary" id="reset-avatar"
+              th:text="${view.trans('user.profile.avatar.reset')}"></button>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>

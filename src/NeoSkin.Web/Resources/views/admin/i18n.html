@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/base :: page(${pageTitle}, ~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <div class="row">
+    <div class="col-lg-8"><div class="card" id="table"></div></div>
+    <div class="col-lg-4">
+      <form th:action="${view.url('/admin/i18n')}" method="post">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title" th:text="${view.trans('admin.i18n.add')}"></h3>
+          </div>
+          <div class="card-body p-0">
+            <div th:if="${errors.any()}" class="alert alert-danger m-3">
+              <i class="icon fas fa-exclamation-triangle"></i>
+              <th:block th:text="${errors.first()}"></th:block>
+            </div>
+            <div th:if="${!errors.any() and view.sessionPull('success')}"
+                 class="alert alert-success m-3">
+              <i class="icon fas fa-check"></i>
+              <th:block th:text="${view.trans('admin.i18n.added')}"></th:block>
+            </div>
+            <th:block th:utext="${view.csrfField()}"></th:block>
+            <div class="container-fluid my-4 px-4">
+              <div class="row mb-3">
+                <div class="col-sm-3" th:text="${view.trans('admin.i18n.group')}"></div>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" name="group" required>
+                </div>
+              </div>
+              <div class="row my-3">
+                <div class="col-sm-3" th:text="${view.trans('admin.i18n.key')}"></div>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" name="key" required>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-sm-3" th:text="${view.trans('admin.i18n.text')}"></div>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" name="text" required>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <input type="submit" th:value="${view.trans('general.submit')}"
+                   class="btn btn-primary">
+          </div>
+        </div>
+      </form>
+      <a class="btn btn-block btn-outline-info"
+         href="https://blessing.netlify.com/ui-text.html" target="_blank"
+         th:text="${view.trans('admin.i18n.tip')}"></a>
+    </div>
+  </div>
+</th:block>
+
+<th:block th:fragment="before-foot">
+</th:block>
+</body>
+</html>

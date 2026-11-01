@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, content, beforeFoot)"
+      th:lang="${locale}">
+<head>
+  <th:block th:replace="~{shared/head :: shared-head}"></th:block>
+  <title th:text="|${title} - ${site_name}|"></title>
+</head>
+
+<body th:classappend="${dark_mode ? 'dark-mode' : ''}" class="hold-transition sidebar-mini">
+  <div class="wrapper">
+    <th:block th:replace="~{shared/header :: shared-header}"></th:block>
+    <th:block th:replace="~{shared/sidebar :: shared-sidebar}"></th:block>
+    <div class="content-wrapper">
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="d-flex justify-content-between flex-wrap">
+            <div>
+              <h1 class="m-0" th:text="${title}"></h1>
+            </div>
+            <div>
+              <div class="breadcrumb"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <section class="content">
+        <div class="container-fluid">
+          <th:block th:replace="${content}"></th:block>
+        </div>
+      </section>
+    </div>
+    <footer class="main-footer">
+      <th:block th:replace="~{shared/copyright :: shared-copyright}"></th:block>
+    </footer>
+  </div>
+  <th:block th:replace="${beforeFoot}"></th:block>
+  <th:block th:replace="~{shared/foot :: shared-foot}"></th:block>
+</body>
+</html>

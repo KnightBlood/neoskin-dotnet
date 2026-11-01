@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{auth/base :: page(~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <p class="login-box-msg" th:text="${view.trans('auth.bind.message')}"></p>
+  <form method="post" id="login-form" th:action="${view.url('/auth/bind')}">
+    <input type="hidden" name="_token" th:value="${view.csrfToken()}">
+    <div class="input-group mb-3">
+      <input name="email" type="email" class="form-control" th:placeholder="${view.trans('auth.email')}">
+      <div class="input-group-append">
+        <div class="input-group-text">
+          <span class="fas fa-envelope"></span>
+        </div>
+      </div>
+    </div>
+
+    <p th:text="${view.trans('auth.bind.introduction')}"></p>
+
+    <th:block th:if="${errors != null and errors.any}">
+      <div class="alert alert-warning">
+        <i class="icon fas fa-exclamation-triangle"></i>
+        <span th:text="${errors.first}"></span>
+      </div>
+    </th:block>
+
+    <button type="submit" class="btn btn-primary btn-block mt-3" th:text="${view.trans('auth.bind.button')}"></button>
+  </form>
+</th:block>
+
+<th:block th:fragment="before-foot"></th:block>
+</body>
+</html>

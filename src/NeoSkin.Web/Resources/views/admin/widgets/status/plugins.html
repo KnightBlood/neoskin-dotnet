@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="widget">
+  <div class="card card-green">
+    <div class="card-header">
+      <h3 class="card-title" th:text="${plugins_title}"></h3>
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered table-striped">
+        <tbody>
+          <tr th:each="plugin : ${plugins}">
+            <td th:text="${plugin.title}"></td>
+            <td th:text="${plugin.version}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>

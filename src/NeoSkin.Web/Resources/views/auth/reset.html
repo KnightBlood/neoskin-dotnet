@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{auth/base :: page(~{::content}, ~{::before-foot})}">
+<body>
+<th:block th:fragment="content">
+  <p class="login-box-msg" th:text="${view.trans('auth.reset.message', 'username', user.nickname)}"></p>
+  <main></main>
+</th:block>
+
+<th:block th:fragment="before-foot"></th:block>
+</body>
+</html>

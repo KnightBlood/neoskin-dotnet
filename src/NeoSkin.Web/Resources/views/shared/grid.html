@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- shared.grid：按 rows（每行若干列，列内含 widget 模板名）渲染 -->
+<th:block th:fragment="grid(rows)">
+  <div class="row" th:each="row : ${rows}">
+    <div th:each="col : ${row}" th:class="|col-${col['css']}|">
+      <th:block th:each="w : ${col['widgets']}">
+        <th:block th:replace="~{__${w}__ :: widget}"></th:block>
+      </th:block>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>

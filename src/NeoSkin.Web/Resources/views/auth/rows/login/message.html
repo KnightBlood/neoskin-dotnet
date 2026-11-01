@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="row">
+  <div th:if="${view.sessionHas('msg')}" class="alert alert-warning"
+       th:text="${view.sessionPull('msg')}"></div>
+</div>
+</body>
+</html>
