@@ -81,7 +81,8 @@ postgres:16 / mssql/server:2022）跑 5 个矩阵 job，另加 linux-x64 Native 
   `Convert.ToInt64` 读取，避免 `GetInt64` 抛 `InvalidCastException`。
 - **SQL Server 保留字**：`public` 是角色名/保留字，列名必须引用（`[public]`）。
 - **SQL Server 分页**：必须 `ORDER BY … OFFSET n ROWS FETCH NEXT m ROWS ONLY`；
-  单行用 `TOP 1`；自增回填用 `SCOPE_IDENTITY()`。
+  单行用 `TOP 1`；自增回填必须用 `INSERT …; SELECT SCOPE_IDENTITY()` **同一批次**
+  （单独一条命令在真 SQL Server 返回 NULL，WiltonDB 可能掩盖此问题）。
 - **SQL Server 加密**：驱动默认 `Encrypt=true`；本地 WiltonDB 设
   `DB_ENCRYPT=false`、`DB_TRUST_SERVER_CERTIFICATE=true`。
 

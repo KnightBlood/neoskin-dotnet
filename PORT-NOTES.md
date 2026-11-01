@@ -1458,6 +1458,11 @@ POST /auth/login → 419 {"code":419,"message":"CSRF token mismatch."}
   过程中修复：`SchemaInstaller` 对已打开连接重复 `Open()`（MySQL/MariaDB 必现）；
   Npgsql 字符串参数需发 unknown（等价 pdo_pgsql 隐式转换）；PG 时间戳读取需格式化；
   SQL Server 的 `public` 是保留字必须引用；`INT` 列统一用 `long` 读取。
+- 首次 CI（linux）修复：`CookieCorpusTest` 两个用例在缺少 `conformance/data` 时抛异常
+  → 改用 `[ConformanceFact]` skip；`CommunicationsHintTest` 移除写死
+  `/tmp/opencode/dash.html` 的调试语句；SQL Server `SCOPE_IDENTITY()` 必须与
+  `INSERT` 同一批次（单独命令在真 SQL Server 返回 NULL，WiltonDB 未暴露）。
+  CI 矩阵（sqlite/mysql/mariadb/pgsql/sqlsrv + linux-x64 AOT）已全绿。
   CI 矩阵见 `.github/workflows/ci.yml`，本机步骤见 `DB-MATRIX.md`。
 - 性能基线（AOT、300 请求）：`/` c=1 ≈ 432 rps（p50 1.7ms）、c=8 ≈ 920 rps（p50 8.1ms）；
   `/auth/login` c=8 ≈ 982 rps；`/skinlib` c=8 ≈ 817 rps；`/avatar/1` c=8 ≈ 3160 rps
