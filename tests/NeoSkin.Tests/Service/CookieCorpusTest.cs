@@ -199,7 +199,7 @@ public sealed class CookieCorpusTest
         }
     }
 
-    [Fact]
+    [ConformanceFact]
     public void DecryptRoundTripsArrays()
     {
         var middleware = new EncryptCookies(new PhpEncrypter(RawKey(), "aes-256-cbc"));
@@ -212,7 +212,7 @@ public sealed class CookieCorpusTest
         Assert.Equal("a", decrypted.Get(0L));
     }
 
-    [Fact]
+    [ConformanceFact]
     public void DisabledCookiesSkipDecryption()
     {
         EncryptCookies.FlushState();

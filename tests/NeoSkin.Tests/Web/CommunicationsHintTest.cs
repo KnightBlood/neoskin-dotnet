@@ -302,8 +302,6 @@ public sealed class CommunicationsHintTest : IAsyncLifetime
         Assert.NotNull(NeoSkin.Web.View.PageView.InboxProvider);
         string dashboard = await (await _client.GetAsync("/user")).Content
             .ReadAsStringAsync();
-
-        File.WriteAllText(Path.Combine(Path.GetTempPath(), "opencode", "dash.html"), dashboard);
         Assert.Contains("data-notifications", dashboard);
         Assert.Contains("Hello", dashboard);
         Assert.Contains("Welcome announcement", dashboard);
