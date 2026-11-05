@@ -49,7 +49,7 @@ AOT 是硬要求，因此**不能用** EF Core（反射/动态代理）、OpenId
 | 图像 | ImageSharp / 自研 PNG 编码 | 目标是与 PHP Imagick 字节级一致 |
 | 序列化 | System.Text.Json source generators | 禁止反射式序列化 |
 | 密码 | BCrypt.Net-Next | 兼容 `$2y$` |
-| 插件 | 编译期契约 + 内置插件 | AOT 无法在运行时加载 IL 程序集（见 §4 第 5 条） |
+| 插件 | 原生 C ABI（`NativeLibrary.Load`）+ 清单层 | PHP 插件不可执行，需按 ABI 重写（D-001）；AOT 无 JIT，不走 IL 程序集加载 |
 | 解决方案 | `.slnx` | — |
 
 
@@ -80,7 +80,7 @@ dotnet test
 ```
 
 - [ ] `dotnet build` 无错误
-- [ ] 所有 173 条路由注册成功
+- [ ] 所有 174 条路由注册成功
 - [ ] 数据库 migration 执行无错误
 - [ ] 存量数据可正常读取
 - [ ] bcrypt 密码验证通过

@@ -40,7 +40,7 @@
 | YAML | **YamlDotNet**（节点解析）+ 自研 Symfony 标量规则 | 语言包 `Resources/lang/*.yml` |
 | 图像 | ImageSharp / 自研 PNG 编码 | 目标：与 PHP Imagick 输出**字节一致**（Java 版已做到） |
 | 缓存 / 会话 | file / redis / memcached / dynamodb | 对应 Java 版实现 |
-| 插件 | **编译期契约 + 内置插件** | AOT 无 JIT，不能运行时加载插件 DLL（见 §8） |
+| 插件 | **原生 C ABI（NativeLibrary.Load）+ 清单层** | PHP 插件不可执行（D-001）；AOT 无 JIT，不能运行时加载插件 DLL（见 §8） |
 | 解决方案 | `.slnx` | `src/NeoSkin.Web` + `tests/NeoSkin.Tests` |
 
 ### 2.1 为什么不用 EF Core / Razor / OpenIddict
@@ -159,13 +159,16 @@ BCrypt.Net-Next；校验兼容 `$2y$`（Laravel 默认）与 `$2a$`/`$2b$`。
 AOT 产物没有 JIT，**无法在运行时加载 IL 程序集**。因此：
 
 - 保留完整契约：`Hook`（7 方法）、`PluginManager`（13 方法）、`Plugin`、24 个 Event；
-- 插件通过**编译期注册**（`IPlugin` 实现 + 源生成/显式注册表）进入应用；
-- 「插件市场 / 上传 zip / 启用禁用」仍管理 `plugins/` 目录与状态文件，
-  但 AOT 构建只执行编译进来的插件；JIT 构建（`dotnet run`）可选支持动态加载；
-- 该偏差记录在 `PORT-NOTES.md`，并在 README 的「已知限制」里说明。
-- **运行时插件方案**：已调研并写入 [`PLUGIN-DESIGN.md`](PLUGIN-DESIGN.md)——
-  推荐跨平台原生 C ABI（`NativeLibrary` + `UnmanagedCallersOnly`），
-  Windows-only 备选为 COM + `ComWrappers` 源生成；当前阶段仅设计，不实现加载。
+- 插件通过**原生 C ABI**进入应用：`NativeLibrary.Load` + `GetExport`，
+  入口 `NeoSkinPluginGetApi`；参数/返回值使用 UTF-8 JSON（见 `PluginAbi.cs`）；
+- `PluginRuntime` 扫描 `package.json` 中声明 `native` 的已启用插件，负责
+  Start/Stop/Reload；失败派发 `PluginBootFailed`；
+- 渲染层（`head_links`/`scripts`/`user_menu`/`user_avatar`/`user_badges`/
+  `side_menu`/`content_policy`）与认证类过滤器（`can_login`/`verify_password`/
+  `client_ip`/`can_register`/`user_password`/`auth_page_rows:*`）已接线；
+- 「插件市场 / 上传 zip / 启用禁用」仍管理 `plugins/` 目录与状态文件；
+- PHP 插件不可直接执行，需按 ABI 重写（D-001）；
+- 设计细节见 [`PLUGIN-DESIGN.md`](PLUGIN-DESIGN.md)。
 
 ---
 
@@ -216,9 +219,9 @@ Twig 模板是规格说明书。
 | Phase 4 | 认证中间件 + SessionGuard ✅；AuthController 全流程 ✅；OAuth2（Passport：token/authorize/refresh/clients/tokens/personal/scopes + Bearer 与 scope 校验）✅ | ✅ 完成（授权页 HTML 待 Phase 7 换模板） |
 | Phase 5 | 控制器（用户 / 皮肤库 / 纹理 / 玩家 / 衣柜 / 举报） | ✅ 完成：玩家/纹理契约/用户中心/衣柜/皮肤库/举报/上传/2D+3D 头像/皮肤+披风预览 |
 | Phase 6 | 管理面板 + 安装向导 + 更新/插件管理 | ✅ 完成（更新管理、选项、插件、市场、通知、安装向导） |
-| Phase 7 | Thymeleaf 子集渲染器 + 86 模板 + 静态资源 | ✅ 引擎 + 86/86 模板全部接入（含安装向导/错误页/OAuth 授权） |
-| Phase 8 | 插件契约（编译期）+ 事件总线 | 🚧 清单层 + ZIP 安装 + 市场 ✅；原生插件 ABI ✅；全部 Java Hook + 语言包 ✅ |
-| Phase 9 | 全量测试（语料 + HTTP 契约 + 浏览器 E2E）与 AOT 回归 | 🚧 431 tests + AOT 回归 ✅；浏览器 E2E 待做 |
+| Phase 7 | Thymeleaf 子集渲染器 + 86 模板 + 静态资源 | ✅ 引擎 + 86 个模板文件全部接入（覆盖源 104 个 Twig：表单由 `OptionForm` 生成、`assets/*` 片段内联、错误页合并） |
+| Phase 8 | 插件清单层 + 原生 C ABI + 事件总线 | ✅ 清单/启停/ZIP/市场；原生 ABI（加载、生命周期、`filter:*`/`event:*`）；渲染层与认证类过滤器、插件语言包已接线；PHP 插件需按 ABI 重写 |
+| Phase 9 | 全量测试（语料 + HTTP 契约 + 浏览器 E2E）与 AOT 回归 | 🚧 446 tests + AOT 回归 ✅；浏览器 E2E、视觉回归待做 |
 
 ---
 

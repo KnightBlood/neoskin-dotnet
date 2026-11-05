@@ -940,18 +940,15 @@ POST /auth/login → 419 {"code":419,"message":"CSRF token mismatch."}
 - 页面标题为 `<pageTitle> - <siteName>`；`window.blessing.route` 固定为 `/auth`（前端仅按路由名匹配）。
 - **偏差**：文案与 DOM 为手写近似（未走模板引擎）；登录表单的实际交互由前端 JS 负责。
 
-## 37. 运行时插件方案调研（仅设计）
+## 37. 运行时插件方案（已落地，见 Phase 10）
 
-按用户要求**暂不实现**，设计写入 [`PLUGIN-DESIGN.md`](PLUGIN-DESIGN.md)：
+按 D-001 采用**方案 A：跨平台原生 C ABI**；实现与接线见 `PLUGIN-DESIGN.md`
+与 §51–§54：
 
-- **方案 A（推荐）**：跨平台原生 C ABI。插件导出 `NeoSkinPluginGetApi`，
-  宿主提供函数指针表（log / option / invokeHook），参数与返回值用 UTF-8 JSON；
-  加载用 `NativeLibrary.Load/GetExport`，禁用时 `Shutdown` + `Free`。
-- **方案 B（备选）**：Windows COM（`[GeneratedComInterface]` +
-  `[GeneratedComClass]` + `StrategyBasedComWrappers`，`DllGetObject` 导出）。
-  仅 Windows 可用，需处理 `bool`/数组/字符串封送与异步包装。
-- 现有清单层（扫描/启用/禁用/ZIP/市场）保持不变；ABI 到 Hook/Event 的映射、
-  实施步骤、测试方案都在设计文档里。
+- 插件导出 `NeoSkinPluginGetApi`，宿主提供函数指针表（log / option / invokeHook），
+  参数与返回值用 UTF-8 JSON；
+- 加载用 `NativeLibrary.Load/GetExport`，禁用时 `Shutdown` + `Free`；
+- 备选 Windows COM 方案不再推进。
 
 ## 38. Phase 7.4：通用布局与列表/资料页
 
@@ -1410,10 +1407,10 @@ POST /auth/login → 419 {"code":419,"message":"CSRF token mismatch."}
 
 ## 58. 下一步
 
-1. 浏览器 E2E / 视觉回归；
-2. 多数据库（MySQL/PostgreSQL/SQL Server）驱动与 CI 矩阵；
+1. 浏览器 E2E 回归纳入 CI（Phase 12 已手工覆盖主要流程）；
+2. 视觉回归与性能门槛（Phase 12 已有初步性能数据）；
 3. 插件市场安装/上传端到端测试；
-4. 性能基线（模板渲染/图片渲染/插件调用）；
+4. 版本升级的请求期编排（PHP `RedirectToSetup` → `Artisan::call('update')`）。
 ## 59. Phase 12：浏览器 E2E、图像输出与多驱动
 
 | 文件 | 内容 |

@@ -1,6 +1,6 @@
 # NeoSkin.NET — 当前实现状态
 
-> 快照日期：2026-11-01。测试：**446 passed / 1 skipped**（数据库矩阵测试无 DB 时 Skip）；Native AOT 发布：`neoskin.exe` 约 43.1 MB
+> 快照日期：2026-11-05。测试：**446 passed / 1 skipped**（数据库矩阵测试无 DB 时 Skip）；Native AOT 发布：`neoskin.exe` 约 43.1 MB
 >（含 MySqlConnector / Npgsql / Microsoft.Data.SqlClient）。
 > 路由覆盖：**174 / 174**（全部路由均已接线）。
 
@@ -40,7 +40,8 @@
 ## 3. 主要已知偏差
 
 1. **模板/HTML**：通用 Thymeleaf 子集引擎已落地（`View/TemplateEngine.cs`），
-   86 个源模板**全部接入**（业务页面、管理端、安装向导、错误页、OAuth 授权页），
+   86 个模板文件（覆盖源 104 个 Twig：表单由 `OptionForm` 生成、`assets/*` 片段内联、
+   错误页合并）**全部接入**（业务页面、管理端、安装向导、错误页、OAuth 授权页），
    不再有手写业务页面。DOM 以源模板为准；与 Thymeleaf 的差异仅在
    自研引擎的空白/属性输出细节。
 2. **图像渲染**：`SkinRenderer` 已移植（等距投影、多边形光栅化、图层合成、透明背景修复、
@@ -74,6 +75,9 @@
    语义，`enable_avatar_cache` / `enable_preview_cache` 分别控制 1 年 / 1 分钟 TTL）；
    非跨进程共享，重启后失效。
 10. **插件语言包**：`/lang/<locale>.js` 仅主语言包，不合并插件命名空间。
+11. **升级编排**：已安装站点启动时执行 `SchemaMigrator`（结构 + 4 个数据迁移，幂等）；
+    未复刻 PHP `RedirectToSetup` 在 `version > option('version')` 时调用
+    `Artisan::call('update')` 的请求期编排（视图/配置缓存清理需由部署流程处理）。
 
 ## 4. 验证方式
 
