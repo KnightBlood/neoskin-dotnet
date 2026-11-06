@@ -1,5 +1,7 @@
 # NeoSkin.NET — .NET 10 / Native AOT 迁移计划
 
+> 最后更新：2026-11-06
+
 > **目标**：把 `blessing-skin-server-Laravel13`（PHP 6.0.11_patch）完整迁移到 .NET 10 + ASP.NET Core，
 > **Native AOT** 发布，保持 **HTTP 接口字节级兼容** 与 **数据库结构/数据完全兼容**。
 >
@@ -168,7 +170,7 @@ AOT 产物没有 JIT，**无法在运行时加载 IL 程序集**。因此：
   `client_ip`/`can_register`/`user_password`/`auth_page_rows:*`）已接线；
 - 「插件市场 / 上传 zip / 启用禁用」仍管理 `plugins/` 目录与状态文件；
 - PHP 插件不可直接执行，需按 ABI 重写（D-001）；
-- 设计细节见 [`PLUGIN-DESIGN.md`](PLUGIN-DESIGN.md)。
+- 设计细节见 [`PORT-NOTES.md`](PORT-NOTES.md) §61。
 
 ---
 

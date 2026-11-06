@@ -1,5 +1,7 @@
 # NeoSkin.NET
 
+> 最后更新：2026-11-06
+
 **Blessing Skin Server 6.0.11_patch 的 .NET 10 / Native AOT 移植**。
 
 - **参考实现（权威）**：[`blessing-skin-server-Laravel13`](../blessing-skin-server-Laravel13)（PHP 6.0.11_patch）
@@ -22,11 +24,11 @@
 （SkinRenderer：2D/3D 头像、皮肤正反预览、披风预览）。**86 个模板文件
 （覆盖源 104 个 Twig）已全部接入**，不再有手写业务页面。
 
-**未实现/偏差**（详见 [STATUS.md](STATUS.md)）：
+**未实现/偏差**（详见 [PROGRESS.md](PROGRESS.md)）：
 
 - 皮肤/头像渲染的光栅化与重采样为自研实现，与 GD/Imagick 不逐字节一致
   （尺寸一致，mean per-channel diff ≈ 2–3/255）；
-- 原生插件 ABI 已实现加载/生命周期/filter/event（[PLUGIN-DESIGN.md](PLUGIN-DESIGN.md)）；
+- 原生插件 ABI 已实现加载/生命周期/filter/event（[PORT-NOTES.md](PORT-NOTES.md) §61）；
   渲染层与认证类 Hook 均已接线，插件语言包已合并；PHP 插件需按 ABI 重写；
 - 更新安装执行 .NET 迁移（含旧 PHP 公告/站内信回填）。
 
@@ -122,7 +124,16 @@ $env:ASPNETCORE_URLS='http://0.0.0.0:5000'
 
 - `src/NeoSkin.Web` — 应用（`PublishAot=true`，`AssemblyName=neoskin`）
 - `tests/NeoSkin.Tests` — 语料 + 单元 + HTTP 契约测试
-- `MIGRATION.md` — 迁移计划与阶段状态
-- `PORT-NOTES.md` — 决策、偏差与踩坑
-- `STATUS.md` — 实现盘点与已知偏差
-- `PLUGIN-DESIGN.md` — AOT 运行时插件方案（设计）
+
+## 文档索引
+
+| 文档 | 内容 |
+| --- | --- |
+| [README.md](README.md) | 项目入口、快速开始 |
+| [AGENTS.md](AGENTS.md) | agent 行为约束 |
+| [PROGRESS.md](PROGRESS.md) | 进度快照与变更记录 |
+| [ACCEPTANCE.md](ACCEPTANCE.md) | 验收清单 |
+| [MIGRATION.md](MIGRATION.md) | 迁移计划与阶段 |
+| [PORT-NOTES.md](PORT-NOTES.md) | 偏差、决策与踩坑（含插件 ABI 设计 §61） |
+| [DEPLOYMENT.md](DEPLOYMENT.md) | 构建、配置、部署与升级 |
+| [DB-MATRIX.md](DB-MATRIX.md) | 数据库矩阵 |
