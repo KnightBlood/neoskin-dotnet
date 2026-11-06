@@ -1,14 +1,23 @@
-name: CI — DB matrix & Native AOT
-
-# 对应 AGENTS.md 的验证清单：sqlite / mysql / mariadb / pgsql / sqlsrv 各跑一遍
-# `dotnet test`，并额外验证 linux-x64 的 Native AOT 发布。
-# 与 Java 版 `.github/workflows/ci.yml` 的矩阵保持一致（数据库镜像/凭据相同）。
+name: CI
 
 on:
   push:
     branches: [ main, master ]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  NODE_VERSION: "24"
+  FRONTEND_URL: "https://github.com/DreamCraft-Tech/blessing-skin-server-patch/releases/download/v6.0.10_patch/blessing-skin-server_6.0.10_patch_php85.zip"
+  FRONTEND_SHA256: "bb94f83718f3fca3737a04b2097e747720ebd5966979cf042dbbba5434da3e73"
 
 jobs:
   verify:
@@ -28,11 +37,13 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: '1'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: true
+          cache-dependency-path: '**/*.csproj'
 
       - name: Restore
         run: dotnet restore NeoSkin.NET.slnx
@@ -45,7 +56,7 @@ jobs:
             -e MYSQL_ROOT_PASSWORD=123456 \
             -e MYSQL_DATABASE=blessing_skin \
             -e MYSQL_USER=blessing -e MYSQL_PASSWORD=123456 \
-            -p 3306:3306 mysql:8 \
+            -p 3306:3306 mysql:8.4 \
             --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
           for i in $(seq 1 60); do
             docker exec neoskin-db mysqladmin --protocol=tcp -h 127.0.0.1 \
@@ -61,7 +72,7 @@ jobs:
             -e MARIADB_ROOT_PASSWORD=123456 \
             -e MARIADB_DATABASE=blessing_skin \
             -e MARIADB_USER=blessing -e MARIADB_PASSWORD=123456 \
-            -p 3306:3306 mariadb:11 \
+            -p 3306:3306 mariadb:11.8 \
             --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
           for i in $(seq 1 60); do
             docker exec neoskin-db mariadb-admin --protocol=tcp -h 127.0.0.1 \
@@ -77,7 +88,7 @@ jobs:
           docker run -d --name neoskin-db \
             -e POSTGRES_PASSWORD=123456 \
             -e POSTGRES_DB=blessing_skin \
-            -p 5432:5432 postgres:16
+            -p 5432:5432 postgres:18
           for i in $(seq 1 60); do
             docker exec neoskin-db pg_isready -U postgres && break
             sleep 2
@@ -95,7 +106,7 @@ jobs:
             -e ACCEPT_EULA=Y \
             -e MSSQL_SA_PASSWORD="$SA_BOOTSTRAP_PASSWORD" \
             -e MSSQL_PID=Developer \
-            -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+            -p 1433:1433 mcr.microsoft.com/mssql/server:2025-latest
           for i in $(seq 1 90); do
             docker exec neoskin-db /opt/mssql-tools18/bin/sqlcmd \
               -C -S localhost -U sa -P "$SA_BOOTSTRAP_PASSWORD" \
@@ -141,11 +152,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: true
+          cache-dependency-path: '**/*.csproj'
 
       - name: Install AOT prerequisites
         run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
@@ -163,15 +176,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: true
+          cache-dependency-path: '**/*.csproj'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: tests/browser/package-lock.json
 
       - name: Install browser test deps
         run: npm ci --prefix tests/browser
@@ -179,9 +196,8 @@ jobs:
       - name: Fetch legacy frontend assets
         run: |
           set -euo pipefail
-          curl -sSLo /tmp/bs.zip \
-            "https://github.com/DreamCraft-Tech/blessing-skin-server-patch/releases/download/v6.0.10_patch/blessing-skin-server_6.0.10_patch_php85.zip"
-          echo "bb94f83718f3fca3737a04b2097e747720ebd5966979cf042dbbba5434da3e73  /tmp/bs.zip" | sha256sum -c -
+          curl -sSLo /tmp/bs.zip "$FRONTEND_URL"
+          echo "$FRONTEND_SHA256  /tmp/bs.zip" | sha256sum -c -
           unzip -q /tmp/bs.zip -d /tmp/bs
           mkdir -p src/NeoSkin.Web/wwwroot
           rm -rf src/NeoSkin.Web/wwwroot/app
@@ -189,7 +205,7 @@ jobs:
 
       - name: Setup Chrome
         id: chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: stable
 
