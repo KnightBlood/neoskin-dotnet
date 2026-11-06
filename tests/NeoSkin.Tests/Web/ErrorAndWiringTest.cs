@@ -64,13 +64,14 @@ public sealed class ErrorAndWiringTest : IAsyncLifetime
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         string body = await response.Content.ReadAsStringAsync();
-        Assert.Equal("""
+        string expected = """
             {
                 "message": "The route nope could not be found.",
                 "exception": true,
                 "trace": []
             }
-            """, body.Replace("\r\n", "\n"));
+            """.Replace("\r\n", "\n");
+        Assert.Equal(expected, body.Replace("\r\n", "\n"));
     }
 
     [Fact]
