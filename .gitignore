@@ -10,7 +10,9 @@ TestResults/
 
 # Runtime data / generated files（只锚定仓库根目录，避免误伤 src/**/Storage）
 /storage/
-/public/
+/public/*
+!/public/app-next/
+!/public/app-next/**
 /wwwroot/app/
 *.sqlite
 *.sqlite-journal

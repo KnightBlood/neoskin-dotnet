@@ -102,3 +102,14 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
 
 前端资源：把 `blessing-skin-server-Laravel13/public/app/` 拷到 `wwwroot/app/`
 （约 18 MB），首页即可加载 SPA；`/lang/<locale>.js` 由后端即时生成。
+
+---
+
+## 7. 共享前端 P1（2026-11-06）
+
+- 新增 `GET /api/bootstrap`（契约 v1）与 SPA 壳 `GET /app-next/{site,admin}`、`/app-next/{site,admin}/*`。
+- 以终端中间件形式挂在 `RouteDispatcher` 之前，不改动 174 条 PHP 路由表；复用 `EncryptCookies` + `StartSession` 读取会话、CSRF 与登录态。
+- 壳注入 `<meta name="csrf-token">`、`<meta name="neoskin-mode">` 与 `#neoskin-bootstrap`；静态资源一年 immutable 缓存；缺失扩展名文件 404。
+- 实现：`src/NeoSkin.Web/Web/SpaFrontend.cs`、`src/NeoSkin.Web/NeoSkinApp.cs`。
+- `.gitignore` 放开 `public/app-next`；构建产物已发布（含 `manifest.json`）。
+- 联调验证：登录 → `/app-next/site/user` → `/app-next/admin/` 仪表盘，0 console error。

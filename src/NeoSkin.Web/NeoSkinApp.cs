@@ -141,6 +141,52 @@ public static class NeoSkinApp
             await next();
         });
 
+        // SPA 壳与 /api/bootstrap：不经过 174 条 PHP 路由表，单独挂载。
+        app.Use(async (context, next) =>
+        {
+            string spaPath = context.Request.Path.Value ?? "";
+            bool isSpa = spaPath.StartsWith("/app-next/", StringComparison.Ordinal)
+                || spaPath == "/api/bootstrap";
+            if (!isSpa)
+            {
+                await next();
+                return;
+            }
+
+            async Task Terminal()
+            {
+                var decrypted = context.Items[Cookie.EncryptCookies.ContextKey]
+                    as Support.PhpArray;
+                string? cookieLocale = decrypted?.Get("locale") as string;
+                string? lang = context.Request.Query["lang"].ToString();
+                DetectLanguagePrefer.Result resolved = DetectLanguagePrefer.Resolve(
+                    new DetectLanguagePrefer.Input(
+                        string.IsNullOrEmpty(lang) ? null : lang,
+                        cookieLocale,
+                        context.Request.Headers.AcceptLanguage.ToString(),
+                        null,
+                        I18n.Locales.AppLocale));
+                context.Items["locale"] = resolved.Locale;
+                await SpaFrontend.HandleAsync(context, option, settings, users, paths);
+            }
+
+            async Task WithSession()
+            {
+                await new StartSessionMiddleware(_ => Terminal(), session,
+                    SessionCookieConfig.Default, cookies).InvokeAsync(context);
+            }
+
+            if (cookies is not null)
+            {
+                await new EncryptCookiesMiddleware(_ => WithSession(), cookies)
+                    .InvokeAsync(context);
+            }
+            else
+            {
+                await WithSession();
+            }
+        });
+
         app.Run(dispatcher.DispatchAsync);
         return app;
     }
