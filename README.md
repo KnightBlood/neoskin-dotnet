@@ -125,6 +125,14 @@ $env:ASPNETCORE_URLS='http://0.0.0.0:5000'
 - `src/NeoSkin.Web` — 应用（`PublishAot=true`，`AssemblyName=neoskin`）
 - `tests/NeoSkin.Tests` — 语料 + 单元 + HTTP 契约测试
 
+## 支持平台
+
+| 平台 | RID | CI |
+| --- | --- | --- |
+| Linux | `linux-x64` / `linux-arm64` | 构建 + 测试 + Native AOT |
+| Windows | `win-x64` / `win-arm64` | 构建 + 测试 + Native AOT |
+| macOS | `osx-x64` / `osx-arm64` | 构建 + 测试 + Native AOT |
+
 ## 文档索引
 
 | 文档 | 内容 |

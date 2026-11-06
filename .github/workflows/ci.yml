@@ -147,10 +147,60 @@ jobs:
       - name: dotnet test
         run: dotnet test NeoSkin.NET.slnx -c Release --no-restore
 
-  publish-aot:
-    name: Native AOT (linux-x64)
-    runs-on: ubuntu-latest
+  platform-build:
+    name: Platform build (${{ matrix.os }} / ${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, arch: x64 }
+          - { os: ubuntu-24.04-arm, arch: arm64 }
+          - { os: windows-latest, arch: x64 }
+          - { os: windows-11-arm, arch: arm64 }
+          - { os: macos-15-intel, arch: x64 }
+          - { os: macos-latest, arch: arm64 }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: true
+          cache-dependency-path: '**/*.csproj'
+      - run: dotnet build NeoSkin.NET.slnx -c Release
+
+  platform-test:
+    name: Platform test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: true
+          cache-dependency-path: '**/*.csproj'
+      - run: dotnet test NeoSkin.NET.slnx -c Release
+
+  publish-aot:
+    name: Native AOT (${{ matrix.rid }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, rid: linux-x64 }
+          - { os: ubuntu-24.04-arm, rid: linux-arm64 }
+          - { os: windows-latest, rid: win-x64 }
+          - { os: windows-11-arm, rid: win-arm64 }
+          - { os: macos-15-intel, rid: osx-x64 }
+          - { os: macos-latest, rid: osx-arm64 }
     steps:
       - uses: actions/checkout@v7
 
@@ -161,15 +211,22 @@ jobs:
           cache-dependency-path: '**/*.csproj'
 
       - name: Install AOT prerequisites
+        if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
 
       - name: Publish
-        run: dotnet publish src/NeoSkin.Web -c Release -r linux-x64 -o publish
+        run: dotnet publish src/NeoSkin.Web -c Release -r ${{ matrix.rid }} -o publish
 
       - name: Smoke check binary
+        shell: bash
         run: |
-          test -x publish/neoskin
-          ls -lh publish/neoskin
+          ls -lh publish/neoskin*
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: neoskin-${{ matrix.rid }}
+          path: publish/
+          retention-days: 7
 
   browser-e2e:
     name: Browser E2E (Playwright)
