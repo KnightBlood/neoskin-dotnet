@@ -157,3 +157,43 @@ jobs:
         run: |
           test -x publish/neoskin
           ls -lh publish/neoskin
+
+  browser-e2e:
+    name: Browser E2E (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install browser test deps
+        run: npm ci --prefix tests/browser
+
+      - name: Fetch legacy frontend assets
+        run: |
+          set -euo pipefail
+          curl -sSLo /tmp/bs.zip \
+            "https://github.com/DreamCraft-Tech/blessing-skin-server-patch/releases/download/v6.0.10_patch/blessing-skin-server_6.0.10_patch_php85.zip"
+          echo "bb94f83718f3fca3737a04b2097e747720ebd5966979cf042dbbba5434da3e73  /tmp/bs.zip" | sha256sum -c -
+          unzip -q /tmp/bs.zip -d /tmp/bs
+          mkdir -p src/NeoSkin.Web/wwwroot
+          rm -rf src/NeoSkin.Web/wwwroot/app
+          cp -r /tmp/bs/public/app src/NeoSkin.Web/wwwroot/app
+
+      - name: Locate Chrome
+        run: |
+          if [ -x /usr/bin/google-chrome ]; then
+            echo "NEOSKIN_CHROME_PATH=/usr/bin/google-chrome" >> "$GITHUB_ENV"
+          fi
+
+      - name: dotnet test (browser)
+        env:
+          NEOSKIN_BROWSER_E2E: "1"
+        run: dotnet test NeoSkin.NET.slnx -c Release --filter "FullyQualifiedName~BrowserE2ETest"

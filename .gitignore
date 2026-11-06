@@ -33,3 +33,6 @@ TestResults/
 # OS
 .DS_Store
 Thumbs.db
+
+# Browser E2E deps
+tests/browser/node_modules/
