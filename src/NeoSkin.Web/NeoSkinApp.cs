@@ -146,8 +146,7 @@ public static class NeoSkinApp
         {
             string spaPath = context.Request.Path.Value ?? "";
             if (SpaFrontend.Mode == "next"
-                && (spaPath == "/" || spaPath == "/admin"
-                    || spaPath.StartsWith("/admin/", StringComparison.Ordinal)))
+                && (spaPath == "/" || spaPath == "/admin"))
             {
                 context.Response.Redirect(spaPath == "/" ? "/app-next/site/" : "/app-next/admin/");
                 return;
