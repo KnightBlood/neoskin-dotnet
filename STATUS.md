@@ -1,6 +1,6 @@
 # NeoSkin.NET — 当前实现状态
 
-> 快照日期：2026-11-06。测试：**447 passed / 1 skipped**（数据库矩阵测试无 DB 时 Skip）；Native AOT 发布：`neoskin.exe` 约 43.1 MB
+> 快照日期：2026-11-06。测试：**447 passed / 1 skipped**（数据库矩阵测试无 DB 时 Skip）；Native AOT 发布：`neoskin.exe` 约 43.1 MB（2026-11-06 实测 `win-x64` publish + CLI install/update/options:cache 通过；剩余 IL2104/IL3053 警告全部来自 `Microsoft.Data.SqlClient` 上游）
 >（含 MySqlConnector / Npgsql / Microsoft.Data.SqlClient）。
 > 路由覆盖：**174 / 174**（全部路由均已接线）。
 
