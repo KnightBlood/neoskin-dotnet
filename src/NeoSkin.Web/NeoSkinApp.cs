@@ -86,10 +86,14 @@ public static class NeoSkinApp
                 communications, notifications, database, cipher, option, settings, oauth, mailer,
                 failures, paths.Textures, paths);
 
+        // `RedirectToSetup` 在已安装且 options.version 落后时执行 `php artisan update`。
+        var updates = new Service.UpdateRunner(database, schema, option, settings, paths,
+            loader.ClearCache);
+
         MiddlewarePipeline pipeline = MiddlewarePipeline.CreateDefault(
             cookies, session, SessionCookieConfig.Default,
             key is null ? null : new PhpEncrypter(key, "aes-256-cbc"),
-            Locales.AppLocale, users, option, loader, oauth, paths, settings);
+            Locales.AppLocale, users, option, loader, oauth, paths, settings, updates);
 
         var dispatcher = new RouteDispatcher(routes, handlerResolver,
             pipeline, option, settings);

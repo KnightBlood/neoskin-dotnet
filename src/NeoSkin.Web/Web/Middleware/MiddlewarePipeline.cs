@@ -47,7 +47,8 @@ public sealed class MiddlewarePipeline
         TranslationFileLoader? loader = null,
         Service.OAuth.OAuthService? oauth = null,
         Paths.AppPaths? paths = null,
-        Config.NeoSkinSettings? settings = null)
+        Config.NeoSkinSettings? settings = null,
+        Service.UpdateRunner? updates = null)
     {
         var pipeline = new MiddlewarePipeline();
 
@@ -90,7 +91,7 @@ public sealed class MiddlewarePipeline
             if (paths is not null)
             {
                 pipeline.Add("App\\Http\\Middleware\\RedirectToSetup",
-                    AuthMiddleware.RedirectToSetup(paths));
+                    AuthMiddleware.RedirectToSetup(paths, updates));
                 pipeline.Add("App\\Http\\Middleware\\CheckInstallation",
                     AuthMiddleware.CheckInstallation(paths));
             }

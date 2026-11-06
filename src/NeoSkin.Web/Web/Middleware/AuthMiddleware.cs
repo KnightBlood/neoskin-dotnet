@@ -314,13 +314,33 @@ public static class AuthMiddleware
         await next();
     };
 
-    /// <summary><c>RedirectToSetup</c>：未安装且访问的不是 <c>setup*</c> → 302 <c>/setup</c>。</summary>
+    /// <summary><c>RedirectToSetup</c>：未安装且访问的不是 <c>setup*</c> → 302 <c>/setup</c>；
+    /// 已安装且版本变新时请求期执行 <c>Artisan::call('update')</c>。</summary>
     public static Func<HttpContext, string?, Func<Task>, Task> RedirectToSetup(
-        Paths.AppPaths paths) => async (context, parameters, next) =>
+        Paths.AppPaths paths, Service.UpdateRunner? updates = null) => async (context, parameters, next) =>
     {
-        bool isSetup = (context.Request.Path.Value ?? "/").TrimStart('/')
-            .StartsWith("setup", StringComparison.OrdinalIgnoreCase);
-        if (!File.Exists(paths.InstallLock) && !isSetup)
+        string path = context.Request.Path.Value ?? "/";
+        bool isSetup = IsSetupPath(path);
+        bool installed = File.Exists(paths.InstallLock);
+
+        if (installed && !isSetup && updates is not null)
+        {
+            try
+            {
+                updates.RunIfNeeded();
+            }
+            catch (Exception e) when (e is System.Data.Common.DbException
+                                          or InvalidOperationException
+                                          or IOException
+                                          or UnauthorizedAccessException)
+            {
+                // 源在同样情况下会 500；常驻进程里一次故障不应放大成所有请求失败。
+                // 保留旧版本继续服务，下个请求会重试。
+                Console.Error.WriteLine($"auto update skipped: {e.Message}");
+            }
+        }
+
+        if (!installed && !isSetup)
         {
             Redirect(context, "/setup");
             return;
@@ -328,6 +348,14 @@ public static class AuthMiddleware
 
         await next();
     };
+
+    /// <summary><c>$request-&gt;is('setup*')</c>：按路径段匹配，<c>setupx</c> 不算。</summary>
+    internal static bool IsSetupPath(string path)
+    {
+        string value = path.TrimStart('/');
+        return value.Equals("setup", StringComparison.OrdinalIgnoreCase)
+               || value.StartsWith("setup/", StringComparison.OrdinalIgnoreCase);
+    }
 
     // ================================================================== Passport scopes
 

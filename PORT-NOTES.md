@@ -444,8 +444,8 @@ POST /auth/login → 419 {"code":419,"message":"CSRF token mismatch."}
 - 邮箱验证链接是**非临时签名**（无 `expires`）；重置密码链接是临时签名（1 小时）。
 - `handleForgot` 成功分支会真实发信；测试只覆盖不碰网络的失败分支（未知邮箱 / 校验失败），
   与 Java 版测试策略一致。
-- `can_register` / `can_login` / `client_ip` 钩子（`BlessingFilter`）尚未接线；
-  对应位置留空并在 PORT-NOTES 记录。
+- `can_register` / `can_login` / `client_ip` 钩子（`BlessingFilter`）已接线：
+  `AuthController` 的注册/登录入口与 `ClientIp()`，见 §52。
 - HTML 视图（login/register/forgot/reset/verify/bind）仍等 Phase 7 模板引擎。
 - 签名无效时走 `abort()` 语义：JSON 请求返回 `{message, exception:true, trace:[]}`，
   其余返回状态页（与源 `Handler::render()` 一致，见 `ErrorPayload`）。
@@ -1410,7 +1410,8 @@ POST /auth/login → 419 {"code":419,"message":"CSRF token mismatch."}
 1. 浏览器 E2E 回归纳入 CI（Phase 12 已手工覆盖主要流程）；
 2. 视觉回归与性能门槛（Phase 12 已有初步性能数据）；
 3. 插件市场安装/上传端到端测试；
-4. 版本升级的请求期编排（PHP `RedirectToSetup` → `Artisan::call('update')`）。
+4. ~~版本升级的请求期编排~~（已完成：`Service/UpdateRunner` +
+   `RedirectToSetup`，含 5.0.0 背景图迁移、版本号、迁移、`view:clear`、补锁、清缓存）。
 ## 59. Phase 12：浏览器 E2E、图像输出与多驱动
 
 | 文件 | 内容 |
@@ -1466,3 +1467,17 @@ POST /auth/login → 419 {"code":419,"message":"CSRF token mismatch."}
   （p50 2.4ms）；`/lang/en.js` c=8 ≈ 1190 rps。
 - 语言包加载器加入与 Laravel `FileLoader::$loaded` 等价的解析缓存；此前每个
   `trans()` 都读盘并解析 YAML，首页 p50 约 15ms / 57 rps，缓存后降至 1.7ms / 432 rps。
+
+## 60. Phase 13：请求期自动升级与 CLI（2026-11-06）
+
+| 文件 | 内容 |
+| --- | --- |
+| `Service/UpdateRunner.cs` | PHP `UpdateCommand`：0.0.1 事件、5.0.0 `home_pic_url`、版本号、`SchemaInstaller` + `SchemaMigrator`、`view:clear`、`install.lock`、清缓存 |
+| `Web/Middleware/AuthMiddleware.cs` | `RedirectToSetup` 已安装且版本落后时调用 `UpdateRunner.RunIfNeeded()`；`setup*` 改为按路径段匹配 |
+| `Cli/CliRunner.cs` | `--neoskin.command=install|bs:install|update|options:cache|plugin:enable|plugin:disable|salt:random`，CLI 模式不启动 HTTP 监听 |
+| `Program.cs` | 先分流 CLI，再启动 Web |
+
+- `UpdateRunner` 用静态锁串行化，并在锁内重新检查版本；失败异常在中间件层降级为日志，
+  避免数据库临时故障放大成所有请求 500。
+- CLI 的 `install` 在缺 `APP_KEY` 时生成并写入 `.env`；`plugin:enable` 对不存在的插件
+  返回 1（PHP 的 not-found 语义）。

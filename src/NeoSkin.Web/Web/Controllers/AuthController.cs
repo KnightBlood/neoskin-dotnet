@@ -159,8 +159,7 @@ public sealed class AuthController(
         SessionStore? session = Session(context);
         string locale = Locale(context);
 
-        // can_register 钩子（源里 BlessingFilter；本工程尚未接线，传 null）
-        // 源：filter.apply("can_register", null) → 拒绝时返回 message(1, reason)
+        // can_register 钩子：{@see ApplyCanRegister()}（源里 BlessingFilter）
 
         // 读取输入
         string email = await InputStringAsync(context, "email");

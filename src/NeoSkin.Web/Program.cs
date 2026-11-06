@@ -8,5 +8,15 @@ namespace NeoSkin.Web;
 /// </summary>
 public static class Program
 {
-    public static void Main(string[] args) => NeoSkinApp.Create(args).Run();
+    public static int Main(string[] args)
+    {
+        // `--neoskin.command=...`：CLI 模式不启动 HTTP 监听（与 Spring 端口一致）。
+        if (Cli.CliRunner.TryCommand(args, out string command))
+        {
+            return Cli.CliRunner.Run(command, args);
+        }
+
+        NeoSkinApp.Create(args).Run();
+        return 0;
+    }
 }

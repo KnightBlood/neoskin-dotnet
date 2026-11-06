@@ -49,6 +49,12 @@ public sealed class TranslationFileLoader
         _cache.Clear();
     }
 
+    /// <summary>
+    /// <c>Cache::flush()</c> / <c>view:clear</c> 的等价物：丢弃已解析的语言包缓存，
+    /// 让升级后的翻译文件重新从磁盘读取。
+    /// </summary>
+    public void ClearCache() => _cache.Clear();
+
     public Dictionary<string, object?> Load(string locale, string group, string? ns)
     {
         if (Unsafe(locale) || (group != "*" && Unsafe(group)))
