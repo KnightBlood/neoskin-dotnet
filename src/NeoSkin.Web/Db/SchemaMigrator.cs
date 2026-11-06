@@ -12,7 +12,7 @@ namespace NeoSkin.Web.Db;
 /// 当前包含 4 个数据迁移；结构迁移仍由 <see cref="SchemaInstaller"/> 负责。</para>
 ///
 /// <para>幂等性：所有步骤都做了存在性判断，重复执行不会重复写入；
-/// <c>create_communications</c> 的旧数据回填尚未移植（当前 .NET 站点没有旧表数据）。</para>
+/// <c>create_communications</c> 会回填旧 PHP 的公告与站内信（按 <c>legacy_key</c> 去重）。</para>
 /// </summary>
 public sealed class SchemaMigrator(
     Database db,

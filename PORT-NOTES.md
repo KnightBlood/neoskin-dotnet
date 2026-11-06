@@ -1381,7 +1381,7 @@ POST /auth/login → 419 {"code":419,"message":"CSRF token mismatch."}
 - `import_options` 只在 options 表为空时灌入，避免升级覆盖站点配置；
   `max_texture_width` 仅在缺失时写 8192。
 - `hash_oauth_client_secrets` 把非 `$2*` 的 secret 用 bcrypt（cost 10）哈希。
-- `create_communications` 目前只保证表存在；旧 PHP 公告/站内信回填未实现。
+- `create_communications` 的旧 PHP 公告/站内信回填已在 §57 补齐（`legacy_key` 幂等）。
 - 更新解压后会执行迁移；服务重启后启动路径也会补齐遗漏项（幂等）。
 
 ## 57. Phase 11.1：旧 PHP 公告/站内信回填
