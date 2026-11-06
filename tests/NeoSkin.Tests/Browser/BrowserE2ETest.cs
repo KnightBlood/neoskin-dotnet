@@ -72,7 +72,7 @@ public sealed class BrowserE2ETest
             using var server = StartServer(root, contentRoot, database, storage, port);
             try
             {
-                WaitHealthy(baseUrl);
+                WaitHealthy(baseUrl, server);
                 Step("server healthy");
 
                 RunFlows(root, baseUrl);
@@ -216,7 +216,11 @@ public sealed class BrowserE2ETest
         string bin = Path.Combine(root, "src", "NeoSkin.Web", "bin");
         if (Directory.Exists(bin))
         {
+            // AOT publish 会额外生成 native/neoskin.exe；它旁边没有 Resources/，
+            // 直接启动会因 routes.json 缺失退出。优先选择带 Resources 的构建产物。
             string? found = Directory.GetFiles(bin, name, SearchOption.AllDirectories)
+                .Where(file => File.Exists(Path.Combine(
+                    Path.GetDirectoryName(file)!, "Resources", "codegraph", "routes.json")))
                 .OrderByDescending(File.GetLastWriteTimeUtc)
                 .FirstOrDefault();
             if (found is not null)
@@ -265,11 +269,16 @@ public sealed class BrowserE2ETest
         return port;
     }
 
-    private static void WaitHealthy(string baseUrl)
+    private static void WaitHealthy(string baseUrl, Process server)
     {
         using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
-        for (int i = 0; i < 120; i++)
+        for (int i = 0; i < 80; i++)
         {
+            if (server.HasExited)
+            {
+                throw new InvalidOperationException(
+                    $"server exited before becoming healthy (code {server.ExitCode}): {baseUrl}");
+            }
             try
             {
                 using HttpResponseMessage response = client.GetAsync(baseUrl + "/auth/login")
