@@ -27,6 +27,8 @@ public static class NeoSkinApp
     {
         var builder = WebApplication.CreateSlimBuilder(args);
         var app = builder.Build();
+        // 让资源清单按实际 wwwroot/app 解析哈希（CI 使用 6.0.10 发布包时也能命中）。
+        Support.AssetManifest.WebRoot = app.Environment.WebRootPath;
 
         settings ??= NeoSkinSettings.FromEnvironment();
         Routes routes = Routes.Load();
