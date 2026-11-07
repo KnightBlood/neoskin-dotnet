@@ -1679,3 +1679,12 @@ ABI v1 在设计中补充了 `Free` 回调：插件返回的结果由插件分�
 - 当前代码**不实现运行时加载**，插件管理仅到清单/安装层；
   后续落地时按第 5 节分阶段实现，并把差异写入 `PORT-NOTES.md`。
 
+
+## 8. 共享前端新增契约端点（2026-11-07）
+
+- 为共享前端 P3 增加 3 个**站内信/举报 JSON** 端点（PHP 原版只有 HTML 页面）：
+  `GET /api/user/inbox`、`GET /api/user/inbox/{id}`、`GET /api/user/reports`。
+- 这些是 NeoSkinFrontend 契约 v1 的增量端点，不计入 PHP 174 条路由；
+  由 `Web/ContractApi.cs` 在 `SpaFrontend` 之前处理，不使用 `routes.json`。
+- 返回结构与 `NeoSkinFrontend/docs/BACKEND-CONTRACT.md` §7.2 一致；
+  匿名访问返回 `401 application/json`。
