@@ -93,6 +93,7 @@ public static class NeoSkinApp
         // `RedirectToSetup` 在已安装且 options.version 落后时执行 `php artisan update`。
         var updates = new Service.UpdateRunner(database, schema, option, settings, paths,
             loader.ClearCache);
+        var updateController = new Controllers.UpdateController(option, settings, paths);
 
         MiddlewarePipeline pipeline = MiddlewarePipeline.CreateDefault(
             cookies, session, SessionCookieConfig.Default,
@@ -179,7 +180,8 @@ public static class NeoSkinApp
                 context.Items["locale"] = resolved.Locale;
                 if (ContractApi.Matches(spaPath)
                     && await ContractApi.HandleAsync(context, users, players, notifications, reports,
-                        textures, communicationsService, communications, option, settings))
+                        textures, communicationsService, communications, option, updateController,
+                        settings))
                 {
                     return;
                 }

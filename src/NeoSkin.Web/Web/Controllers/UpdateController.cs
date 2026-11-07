@@ -107,6 +107,35 @@ public sealed class UpdateController(
         await context.Response.WriteAsync(html);
     };
 
+    /// <summary><c>GET /api/admin/update/info</c>：更新信息 JSON（管理端 SPA）。</summary>
+    public async Task InfoAsync(HttpContext context)
+    {
+        (bool ok, PhpArray? info, string? error) = await FetchInfoAsync(context);
+        bool canUpdate = info is not null && CanUpdate(context, info);
+        SessionStore? session = Session(context);
+        string notice = "";
+        if (session?.Get("update_notice") is string pendingNotice)
+        {
+            notice = pendingNotice;
+            session.Forget("update_notice");
+        }
+
+        var body = new PhpArray()
+            .With("latest", info?.Get("latest")?.ToString() ?? "")
+            .With("current", settings.Version)
+            .With("error", error ?? "")
+            .With("can_update", canUpdate)
+            .With("package", session?.Get(PendingKey))
+            .With("notice", notice)
+            .With("upload_limits", new PhpArray()
+                .With("application", "64 MB")
+                .With("upload", "64 MB"));
+
+        context.Response.StatusCode = 200;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync(PhpJson.Encode(body, 0));
+    }
+
     // ================================================================== download
 
     /// <summary><c>POST admin/update/download</c>。</summary>

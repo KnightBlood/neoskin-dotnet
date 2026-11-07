@@ -28,6 +28,7 @@ public static class ContractApi
         || path.StartsWith("/api/user/inbox/", StringComparison.Ordinal)
         || path == "/api/user/reports"
         || path == "/api/admin/dashboard"
+        || path == "/api/admin/update/info"
         || path.StartsWith("/api/admin/options/", StringComparison.Ordinal)
         || path == "/api/admin/communications"
         || path.StartsWith("/api/admin/communications/", StringComparison.Ordinal);
@@ -36,7 +37,8 @@ public static class ContractApi
     public static async Task<bool> HandleAsync(HttpContext context, UserRepository users,
         PlayerRepository players, NotificationRepository notifications, ReportRepository reports,
         TextureRepository textures, Communications communications, CommunicationRepository
-        communicationRepository, Option option, NeoSkinSettings settings)
+        communicationRepository, Option option, Controllers.UpdateController updateController,
+        NeoSkinSettings settings)
     {
         string path = context.Request.Path.Value ?? "/";
         if (!Matches(path))
@@ -79,6 +81,21 @@ public static class ContractApi
                 ["storage"] = storage,
                 ["storageHuman"] = StorageDisplay(storage),
             });
+            return true;
+        }
+
+        if (path == "/api/admin/update/info")
+        {
+            if (!user.IsAdmin)
+            {
+                await WriteJsonAsync(context, 403, new Dictionary<string, object?>
+                {
+                    ["message"] = "Forbidden",
+                });
+                return true;
+            }
+
+            await updateController.InfoAsync(context);
             return true;
         }
 
