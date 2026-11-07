@@ -5,6 +5,7 @@ using NeoSkin.Web.Middleware;
 using NeoSkin.Web.Service;
 using NeoSkin.Web.Session;
 using NeoSkin.Web.Support;
+using NeoSkin.Web.Web.Input;
 
 namespace NeoSkin.Web.Web;
 
@@ -26,12 +27,14 @@ public static class ContractApi
         path == "/api/user/inbox"
         || path.StartsWith("/api/user/inbox/", StringComparison.Ordinal)
         || path == "/api/user/reports"
-        || path == "/api/admin/dashboard";
+        || path == "/api/admin/dashboard"
+        || path.StartsWith("/api/admin/options/", StringComparison.Ordinal);
 
     /// <summary>处理请求；返回 <c>false</c> 表示交给后续路由分发器。</summary>
     public static async Task<bool> HandleAsync(HttpContext context, UserRepository users,
         PlayerRepository players, NotificationRepository notifications, ReportRepository reports,
-        TextureRepository textures, Communications communications, NeoSkinSettings settings)
+        TextureRepository textures, Communications communications, Option option,
+        NeoSkinSettings settings)
     {
         string path = context.Request.Path.Value ?? "/";
         if (!Matches(path))
@@ -77,6 +80,22 @@ public static class ContractApi
             return true;
         }
 
+        if (path.StartsWith("/api/admin/options/", StringComparison.Ordinal))
+        {
+            if (!user.IsAdmin)
+            {
+                await WriteJsonAsync(context, 403, new Dictionary<string, object?>
+                {
+                    ["message"] = "Forbidden",
+                });
+                return true;
+            }
+
+            string group = path["/api/admin/options/".Length..];
+            await OptionsGroupAsync(context, group, option);
+            return true;
+        }
+
         if (path == "/api/user/reports")
         {
             await WriteReportsAsync(context, reports, textures, user.Uid);
@@ -98,6 +117,172 @@ public static class ContractApi
 
         await WriteMessageAsync(context, notifications, communications, user.Uid, id, settings);
         return true;
+    }
+
+    private static readonly Dictionary<string, string[]> OptionGroups =
+        new(StringComparer.Ordinal)
+        {
+            ["options"] =
+            [
+                "site_name", "site_description", "site_url", "register_with_player_name",
+                "require_verification", "regs_per_ip", "max_upload_file_size", "max_texture_width",
+                "player_name_rule", "custom_player_name_regexp", "player_name_length_min",
+                "player_name_length_max", "auto_del_invalid_texture", "allow_downloading_texture",
+                "status_code_for_private", "texture_name_regexp", "content_policy",
+                "meta_keywords", "meta_description", "meta_extras", "recaptcha_sitekey",
+                "recaptcha_secretkey", "recaptcha_invisible", "update_source",
+                "plugin_market_source",
+            ],
+            ["customize"] =
+            [
+                "home_pic_url", "favicon_url", "transparent_navbar", "hide_intro", "fixed_bg",
+                "copyright_prefer", "copyright_text", "custom_css", "custom_js",
+                "navbar_color", "sidebar_color",
+            ],
+            ["score"] =
+            [
+                "score_per_storage", "private_score_per_storage", "score_per_closet_item",
+                "return_score", "score_per_player", "user_initial_score",
+                "reporter_score_modification", "reporter_reward_score",
+                "sign_gap_time", "sign_after_zero", "score_award_per_texture",
+                "take_back_scores_after_deletion", "score_award_per_like",
+            ],
+            ["resource"] =
+            [
+                "force_ssl", "auto_detect_asset_url", "cdn_address", "cache_expire_time",
+                "enable_avatar_cache", "enable_preview_cache", "allow_downloading_texture",
+            ],
+        };
+
+    private static readonly HashSet<string> BoolOptions = new(StringComparer.Ordinal)
+    {
+        "transparent_navbar", "hide_intro", "fixed_bg", "register_with_player_name",
+        "require_verification", "auto_del_invalid_texture", "allow_downloading_texture",
+        "recaptcha_invisible", "return_score", "sign_after_zero",
+        "take_back_scores_after_deletion", "enable_avatar_cache", "enable_preview_cache",
+        "force_ssl", "auto_detect_asset_url",
+    };
+
+    private static async Task OptionsGroupAsync(HttpContext context, string group, Option option)
+    {
+        if (!OptionGroups.TryGetValue(group, out string[]? keys))
+        {
+            await WriteNotFoundAsync(context);
+            return;
+        }
+
+        string locale = context.Items["locale"] as string ?? "zh_CN";
+        if (!HttpMethods.IsGet(context.Request.Method))
+        {
+            if (!HttpMethods.IsPut(context.Request.Method))
+            {
+                context.Response.StatusCode = 405;
+                return;
+            }
+
+            Dictionary<string, object?> input = await RequestInput.BagAsync(context);
+            if (group == "options")
+            {
+                foreach (string key in new[] { "site_name", "site_description", "content_policy" })
+                {
+                    if (input.TryGetValue(key, out object? raw))
+                    {
+                        string value = PhpString.Cast(raw);
+                        if (value.Length > 0)
+                        {
+                            option.Set(key + "_" + locale, value);
+                        }
+                    }
+                }
+            }
+
+            if (group == "score"
+                && (input.ContainsKey("sign_score_from") || input.ContainsKey("sign_score_to")))
+            {
+                option.Set("sign_score", InputString(input, "sign_score_from")
+                    + "," + InputString(input, "sign_score_to"));
+            }
+
+            foreach (string key in keys)
+            {
+                if (group == "options"
+                    && key is "site_name" or "site_description" or "content_policy")
+                {
+                    continue;
+                }
+
+                if (BoolOptions.Contains(key))
+                {
+                    option.Set(key, Truthy(input.TryGetValue(key, out object? raw) ? raw : null)
+                        ? "true"
+                        : "false");
+                    continue;
+                }
+
+                if (!input.ContainsKey(key))
+                {
+                    continue;
+                }
+
+                string value = InputString(input, key).Trim();
+                if (key == "site_url")
+                {
+                    value = value.TrimEnd('/');
+                    if (value.EndsWith("/index.php", StringComparison.Ordinal))
+                    {
+                        value = value[..^10];
+                    }
+                }
+                else if (key == "cdn_address")
+                {
+                    value = value.TrimEnd('/');
+                }
+
+                option.Set(key, value);
+            }
+
+            await WriteJsonAsync(context, 200, new Dictionary<string, object?>
+            {
+                ["code"] = 0,
+                ["message"] = "保存成功",
+            });
+            return;
+        }
+
+        var values = new Dictionary<string, object?>(StringComparer.Ordinal);
+        foreach (string key in keys)
+        {
+            bool localized = group == "options"
+                && key is "site_name" or "site_description" or "content_policy";
+            values[key] = localized
+                ? option.GetLocalized(key, "")?.ToString() ?? ""
+                : option.Get(key)?.ToString() ?? "";
+        }
+
+        if (group == "score")
+        {
+            string[] parts = (option.Get("sign_score")?.ToString() ?? "").Split(',');
+            values["sign_score_from"] = parts.Length > 0 ? parts[0].Trim() : "";
+            values["sign_score_to"] = parts.Length > 1 ? parts[1].Trim() : "";
+        }
+
+        await WriteJsonAsync(context, 200, values);
+    }
+
+    private static string InputString(Dictionary<string, object?> input, string key) =>
+        input.TryGetValue(key, out object? value) && value is not null
+            ? PhpString.Cast(value)
+            : "";
+
+    private static bool Truthy(object? value)
+    {
+        if (value is bool flag)
+        {
+            return flag;
+        }
+
+        string text = value is null ? "" : PhpString.Cast(value).Trim().ToLowerInvariant();
+        return text is "1" or "true" or "on" or "yes";
     }
 
     private static async Task WriteInboxAsync(HttpContext context,
