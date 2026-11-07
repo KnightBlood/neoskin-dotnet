@@ -68,6 +68,13 @@ public sealed class TranslationsController(
         lines.Save(row, settings.Timezone);
 
         Session(context)?.Put("success", true);
+        if (context.Request.Headers.Accept.ToString()
+            .Contains("application/json", StringComparison.OrdinalIgnoreCase))
+        {
+            await JsonAsync(context, 200, Message(0, Trans(context, "admin.i18n.added")));
+            return;
+        }
+
         context.Response.StatusCode = 302;
         context.Response.Headers.Location = "http://" + Host(context) + "/admin/i18n";
         context.Response.Headers["Cache-Control"] = "no-cache, private";

@@ -131,3 +131,5 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
 - 新增 `GET /api/admin/dashboard`：用户/角色/材质数量与存储空间。
 - 实现：`src/NeoSkin.Web/Web/ContractApi.cs`（管理员校验 + 统计）、`NeoSkinApp.cs`。
 - 验证：`dotnet build` 通过；`dotnet test` 447 passed / 1 skipped。
+
+- `POST /admin/i18n`：当 `Accept: application/json` 时返回 `{code:0,message}`（共享前端直接调用），否则保持原 302 跳转。
