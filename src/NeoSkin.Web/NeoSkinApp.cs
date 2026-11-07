@@ -73,6 +73,8 @@ public static class NeoSkinApp
         var languageLines = new LanguageLineRepository(database);
         var communications = new CommunicationRepository(database);
         var notifications = new NotificationRepository(database);
+        var communicationsService = new Service.Communications(communications, notifications,
+            users, settings);
         var loader = new TranslationFileLoader();
         var cipher = CipherConfig.Create(settings);
         var failures = new LoginFailCounter();
@@ -153,7 +155,8 @@ public static class NeoSkinApp
             }
 
             bool isSpa = spaPath.StartsWith("/app-next/", StringComparison.Ordinal)
-                || spaPath == "/api/bootstrap";
+                || spaPath == "/api/bootstrap"
+                || ContractApi.Matches(spaPath);
             if (!isSpa)
             {
                 await next();
@@ -174,6 +177,13 @@ public static class NeoSkinApp
                         null,
                         I18n.Locales.AppLocale));
                 context.Items["locale"] = resolved.Locale;
+                if (ContractApi.Matches(spaPath)
+                    && await ContractApi.HandleAsync(context, users, notifications, reports,
+                        textures, communicationsService, settings))
+                {
+                    return;
+                }
+
                 await SpaFrontend.HandleAsync(context, option, settings, users, paths);
             }
 

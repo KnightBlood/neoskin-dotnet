@@ -38,3 +38,6 @@ Thumbs.db
 
 # Browser E2E deps
 tests/browser/node_modules/
+
+# 运行期会话文件（content root 下的 Storage）
+/src/NeoSkin.Web/Storage/framework/

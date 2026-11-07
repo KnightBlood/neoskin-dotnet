@@ -113,3 +113,16 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
 - 实现：`src/NeoSkin.Web/Web/SpaFrontend.cs`、`src/NeoSkin.Web/NeoSkinApp.cs`。
 - `.gitignore` 放开 `public/app-next`；构建产物已发布（含 `manifest.json`）。
 - 联调验证：登录 → `/app-next/site/user` → `/app-next/admin/` 仪表盘，0 console error。
+
+---
+
+## 8. 共享前端 P3（2026-11-07）
+
+- 新增用户中心契约端点，挂载在 174 条 PHP 路由表之前（`ContractApi`），不改路由表：
+  - `GET /api/user/inbox?page=&per_page=`：分页 + `unread`，条目含 `preview`/`format`/`communication_id`；
+  - `GET /api/user/inbox/{id}`：`{code,data}`，自动已读；
+  - `GET /api/user/reports?page=&per_page=`：举报分页，含 `texture_name`。
+- 实现：`src/NeoSkin.Web/Web/ContractApi.cs`、`src/NeoSkin.Web/NeoSkinApp.cs`
+  （`isSpa` 分支 + `Service.Communications` 装配）、`src/NeoSkin.Web/Db/NotificationRepository.cs`
+  （`CountUnread`）。
+- 验证：`dotnet build NeoSkin.NET.slnx` 通过；`dotnet test` 447 passed / 1 skipped；CI 验证待推送。

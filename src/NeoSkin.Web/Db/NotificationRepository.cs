@@ -100,6 +100,28 @@ public sealed class NotificationRepository(Database db)
             ("@both", CommunicationRepository.KindBoth));
     }
 
+    /// <summary><c>inboxQuery($user)-&gt;whereNull('read_at')-&gt;count()</c>。</summary>
+    public long CountUnread(long notifiableId)
+    {
+        string commId = db.Dialect.CastText(db.Dialect.JsonText("n.\"data\"", "communication_id"));
+        string token = db.Dialect.CastText(db.Dialect.JsonText("n.\"data\"", "delivery_token"));
+        string commInt = db.Dialect.JsonInt("n.\"data\"", "communication_id");
+
+        string sql = "SELECT COUNT(*) FROM notifications n"
+            + " WHERE n.\"notifiable_type\" = @t AND n.\"notifiable_id\" = @nid"
+            + " AND n.\"read_at\" IS NULL"
+            + " AND (" + commId + " IS NULL OR EXISTS (SELECT 1 FROM communications c"
+            + " WHERE c.\"id\" = " + commInt
+            + " AND c.\"status\" = @published AND c.\"kind\" IN (@message, @both)"
+            + " AND (c.\"delivery_token\" = " + token
+            + " OR (c.\"delivery_token\" IS NULL AND " + token + " IS NULL))))";
+
+        return db.Long(sql, ("@t", NotifiableType), ("@nid", notifiableId),
+            ("@published", CommunicationRepository.StatusPublished),
+            ("@message", CommunicationRepository.KindMessage),
+            ("@both", CommunicationRepository.KindBoth));
+    }
+
     /// <summary><c>inboxQuery($user)-&gt;latest()-&gt;paginate(20)</c>（全部，不只看未读）。</summary>
     public List<Row> InboxPage(long notifiableId, int limit, int offset)
     {
