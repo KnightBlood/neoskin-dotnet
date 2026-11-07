@@ -28,13 +28,15 @@ public static class ContractApi
         || path.StartsWith("/api/user/inbox/", StringComparison.Ordinal)
         || path == "/api/user/reports"
         || path == "/api/admin/dashboard"
-        || path.StartsWith("/api/admin/options/", StringComparison.Ordinal);
+        || path.StartsWith("/api/admin/options/", StringComparison.Ordinal)
+        || path == "/api/admin/communications"
+        || path.StartsWith("/api/admin/communications/", StringComparison.Ordinal);
 
     /// <summary>处理请求；返回 <c>false</c> 表示交给后续路由分发器。</summary>
     public static async Task<bool> HandleAsync(HttpContext context, UserRepository users,
         PlayerRepository players, NotificationRepository notifications, ReportRepository reports,
-        TextureRepository textures, Communications communications, Option option,
-        NeoSkinSettings settings)
+        TextureRepository textures, Communications communications, CommunicationRepository
+        communicationRepository, Option option, NeoSkinSettings settings)
     {
         string path = context.Request.Path.Value ?? "/";
         if (!Matches(path))
@@ -93,6 +95,35 @@ public static class ContractApi
 
             string group = path["/api/admin/options/".Length..];
             await OptionsGroupAsync(context, group, option);
+            return true;
+        }
+
+        if (path == "/api/admin/communications"
+            || path.StartsWith("/api/admin/communications/", StringComparison.Ordinal))
+        {
+            if (!user.IsAdmin)
+            {
+                await WriteJsonAsync(context, 403, new Dictionary<string, object?>
+                {
+                    ["message"] = "Forbidden",
+                });
+                return true;
+            }
+
+            if (path == "/api/admin/communications")
+            {
+                await WriteCommunicationsAsync(context, communicationRepository, notifications);
+                return true;
+            }
+
+            string idRaw = path["/api/admin/communications/".Length..];
+            if (!long.TryParse(idRaw, out long communicationId))
+            {
+                await WriteNotFoundAsync(context);
+                return true;
+            }
+
+            await WriteCommunicationEditorAsync(context, communicationRepository, communicationId);
             return true;
         }
 
@@ -283,6 +314,93 @@ public static class ContractApi
 
         string text = value is null ? "" : PhpString.Cast(value).Trim().ToLowerInvariant();
         return text is "1" or "true" or "on" or "yes";
+    }
+
+    private static async Task WriteCommunicationsAsync(HttpContext context,
+        CommunicationRepository communications, NotificationRepository notifications)
+    {
+        int page = ParsePositive(context.Request.Query["page"], 1);
+        const int perPage = 15;
+        long total = communications.CountMessages();
+        int lastPage = LastPage(total, perPage);
+
+        var items = new List<Dictionary<string, object?>>();
+        foreach (CommunicationRepository.Row row in
+                 communications.MessagePage(perPage, (page - 1) * perPage))
+        {
+            items.Add(new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["id"] = row.Id,
+                ["title"] = row.Title,
+                ["kind"] = row.Kind,
+                ["status"] = row.Status,
+                ["read_count"] = notifications.CountRead(row.Id),
+                ["delivery_count"] = notifications.CountDelivery(row.Id),
+                ["updated_at"] = row.UpdatedAt,
+            });
+        }
+
+        await WriteJsonAsync(context, 200, new Dictionary<string, object?>(StringComparer.Ordinal)
+        {
+            ["data"] = items,
+            ["current_page"] = page,
+            ["last_page"] = lastPage,
+            ["per_page"] = perPage,
+            ["total"] = total,
+        });
+    }
+
+    private static async Task WriteCommunicationEditorAsync(HttpContext context,
+        CommunicationRepository communications, long id)
+    {
+        CommunicationRepository.Row? row = communications.Find(id);
+        if (row is null)
+        {
+            await WriteNotFoundAsync(context);
+            return;
+        }
+
+        object? blocks = new List<object?>();
+        if (!string.IsNullOrWhiteSpace(row.Blocks))
+        {
+            try
+            {
+                blocks = PhpJson.Decode(row.Blocks) ?? new List<object?>();
+            }
+            catch (Exception e) when (e is ArgumentException or FormatException)
+            {
+                blocks = new List<object?>();
+            }
+        }
+
+        var audience = new PhpArray().With("receiver", "all");
+        if (!string.IsNullOrWhiteSpace(row.Audience))
+        {
+            try
+            {
+                if (PhpJson.Decode(row.Audience) is PhpArray parsed)
+                {
+                    audience = parsed;
+                }
+            }
+            catch (Exception e) when (e is ArgumentException or FormatException)
+            {
+                // keep default
+            }
+        }
+
+        await WriteJsonAsync(context, 200, new Dictionary<string, object?>(StringComparer.Ordinal)
+        {
+            ["id"] = row.Id,
+            ["title"] = row.Title,
+            ["kind"] = row.Kind,
+            ["status"] = row.Status,
+            ["locale"] = row.Locale,
+            ["editor"] = string.IsNullOrEmpty(row.Editor) ? "blocks" : row.Editor,
+            ["source"] = row.Source ?? "",
+            ["blocks"] = blocks,
+            ["audience"] = audience,
+        });
     }
 
     private static async Task WriteInboxAsync(HttpContext context,

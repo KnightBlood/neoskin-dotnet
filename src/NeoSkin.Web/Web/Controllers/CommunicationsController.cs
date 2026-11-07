@@ -36,6 +36,17 @@ public sealed class CommunicationsController(
         }
 
         CommunicationRepository.Row saved = service.Save(data, null, user?.Uid ?? 0);
+        if (WantsJson(context))
+        {
+            await JsonAsync(context, 200, new PhpArray()
+                .With("code", 0)
+                .With("message", saved.Status == CommunicationRepository.StatusPublished
+                    ? "内容已发布。"
+                    : "草稿已保存。")
+                .With("data", new PhpArray().With("id", saved.Id).With("status", saved.Status)));
+            return;
+        }
+
         string query = saved.Kind == CommunicationRepository.KindAnnouncement
             ? "?announcement=1"
             : "?edit=" + saved.Id;
@@ -82,6 +93,15 @@ public sealed class CommunicationsController(
         }
 
         CommunicationRepository.Row saved = service.Save(data, communication, user?.Uid ?? 0);
+        if (WantsJson(context))
+        {
+            await JsonAsync(context, 200, new PhpArray()
+                .With("code", 0)
+                .With("message", "内容已更新。")
+                .With("data", new PhpArray().With("id", saved.Id).With("status", saved.Status)));
+            return;
+        }
+
         string query = saved.Kind == CommunicationRepository.KindAnnouncement
             ? "?announcement=1"
             : "?edit=" + saved.Id;
@@ -103,6 +123,14 @@ public sealed class CommunicationsController(
         }
 
         service.Withdraw(communication);
+        if (WantsJson(context))
+        {
+            await JsonAsync(context, 200, new PhpArray()
+                .With("code", 0)
+                .With("message", "内容已撤回。"));
+            return;
+        }
+
         Redirect(context, "http://" + Host(context) + "/admin/communications",
             "communication_notice", "内容已撤回。");
         await Task.CompletedTask;
@@ -625,6 +653,9 @@ public sealed class CommunicationsController(
         await context.Response.WriteAsync(html);
     };
     // ================================================================== 辅助
+
+    private static bool WantsJson(HttpContext context) =>
+        context.Request.Headers.ContainsKey("X-Neoskin-Spa");
 
     static void Redirect(HttpContext context, string location, string flashKey, string message)
     {
