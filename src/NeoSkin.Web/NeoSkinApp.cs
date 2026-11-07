@@ -178,7 +178,7 @@ public static class NeoSkinApp
                         I18n.Locales.AppLocale));
                 context.Items["locale"] = resolved.Locale;
                 if (ContractApi.Matches(spaPath)
-                    && await ContractApi.HandleAsync(context, users, notifications, reports,
+                    && await ContractApi.HandleAsync(context, users, players, notifications, reports,
                         textures, communicationsService, settings))
                 {
                     return;

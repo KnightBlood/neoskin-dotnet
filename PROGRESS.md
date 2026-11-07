@@ -126,3 +126,8 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
   （`isSpa` 分支 + `Service.Communications` 装配）、`src/NeoSkin.Web/Db/NotificationRepository.cs`
   （`CountUnread`）。
 - 验证：`dotnet build NeoSkin.NET.slnx` 通过；`dotnet test` 447 passed / 1 skipped；CI 验证待推送。
+
+### 2026-11-07（P4 增量）
+- 新增 `GET /api/admin/dashboard`：用户/角色/材质数量与存储空间。
+- 实现：`src/NeoSkin.Web/Web/ContractApi.cs`（管理员校验 + 统计）、`NeoSkinApp.cs`。
+- 验证：`dotnet build` 通过；`dotnet test` 447 passed / 1 skipped。

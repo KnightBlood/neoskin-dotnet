@@ -25,11 +25,12 @@ public static class ContractApi
     public static bool Matches(string path) =>
         path == "/api/user/inbox"
         || path.StartsWith("/api/user/inbox/", StringComparison.Ordinal)
-        || path == "/api/user/reports";
+        || path == "/api/user/reports"
+        || path == "/api/admin/dashboard";
 
     /// <summary>处理请求；返回 <c>false</c> 表示交给后续路由分发器。</summary>
     public static async Task<bool> HandleAsync(HttpContext context, UserRepository users,
-        NotificationRepository notifications, ReportRepository reports,
+        PlayerRepository players, NotificationRepository notifications, ReportRepository reports,
         TextureRepository textures, Communications communications, NeoSkinSettings settings)
     {
         string path = context.Request.Path.Value ?? "/";
@@ -49,6 +50,29 @@ public static class ContractApi
             await WriteJsonAsync(context, 401, new Dictionary<string, object?>
             {
                 ["message"] = "Unauthenticated.",
+            });
+            return true;
+        }
+
+        if (path == "/api/admin/dashboard")
+        {
+            if (!user.IsAdmin)
+            {
+                await WriteJsonAsync(context, 403, new Dictionary<string, object?>
+                {
+                    ["message"] = "Forbidden",
+                });
+                return true;
+            }
+
+            long storage = textures.SumSize();
+            await WriteJsonAsync(context, 200, new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["users"] = users.CountAll(),
+                ["players"] = players.CountAll(),
+                ["textures"] = textures.CountAll(),
+                ["storage"] = storage,
+                ["storageHuman"] = StorageDisplay(storage),
             });
             return true;
         }
@@ -221,6 +245,11 @@ public static class ContractApi
 
     private static string? Nullable(string? value) =>
         string.IsNullOrEmpty(value) ? null : value;
+
+    private static string StorageDisplay(long storage) =>
+        storage > 1024
+            ? (storage / 1024.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + "MB"
+            : storage + "KB";
 
     private static UserRepository.UserRow? CurrentUser(HttpContext context, UserRepository users) =>
         context.Items[StartSessionMiddleware.SessionKey] is SessionStore session
