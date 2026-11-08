@@ -128,6 +128,33 @@ public sealed class AdminChartHintTest : IAsyncLifetime
     }
 
     [Fact]
+    public async Task AdminStatusReturnsJsonForSpa()
+    {
+        await _client.GetAsync("/auth/captcha");
+        HttpResponseMessage login = await _client.PostAsync("/auth/login",
+            new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["_token"] = XsrfToken() ?? "",
+                ["identification"] = "admin@a.c",
+                ["password"] = "secret123",
+            }));
+        Assert.Equal(HttpStatusCode.OK, login.StatusCode);
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "/admin/status");
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        HttpResponseMessage response = await _client.SendAsync(request);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("application/json", response.Content.Headers.ContentType?.MediaType);
+        using JsonDocument document = JsonDocument.Parse(
+            await response.Content.ReadAsStringAsync());
+        Assert.True(document.RootElement.TryGetProperty("bs", out _));
+        Assert.True(document.RootElement.TryGetProperty("server", out _));
+        Assert.True(document.RootElement.TryGetProperty("db", out _));
+        Assert.True(document.RootElement.TryGetProperty("plugins", out _));
+    }
+
+    [Fact]
     public async Task AdminPagesRenderLayouts()
     {
         await _client.GetAsync("/auth/captcha");

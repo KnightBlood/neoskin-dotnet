@@ -172,3 +172,11 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
 - 共享前端产物更新为 site `index-pnUYroLe.js` / admin `index-8f1tgAaz.js`。
 - 验证：`dotnet test` 447 passed / 1 skipped（品牌默认值断言已按 NeoSkin 调整）。
 - GitHub Release `v6.0.11` 已发布：6 个 RID 的 `neoskin-dotnet_6.0.11_*.zip`。
+
+### 2026-11-08（管理端运行状态 JSON 协商）
+
+- `GET admin/status` 增加内容协商：`Accept: application/json` 或 `X-Neoskin-Spa: 1`
+  返回 `bs` / `server` / `db` / `plugins` JSON；普通 HTML 请求继续渲染 legacy 状态页。
+- 修复共享管理端 SPA 状态页只显示 Go 端数据的问题；四端共享 `spa.sqlite` 联调时
+  `/app-next/admin/status` 正确展示 .NET 版本、运行时与数据库信息。
+- 验证：`AdminChartHintTest` 6 passed（含新增 `AdminStatusReturnsJsonForSpa`）。

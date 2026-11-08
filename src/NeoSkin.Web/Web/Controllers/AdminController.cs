@@ -85,6 +85,22 @@ public sealed class AdminController(
             .With("database", settings.Database.Name)
             .With("prefix", settings.Database.Prefix);
 
+        // 管理端 SPA 通过 Accept: application/json 或 X-Neoskin-Spa 读取 JSON。
+        bool wantsJson = context.Request.Headers.ContainsKey("X-Neoskin-Spa")
+            || (context.Request.Headers.Accept.ToString().Contains("application/json",
+                StringComparison.OrdinalIgnoreCase));
+        if (wantsJson)
+        {
+            context.Response.StatusCode = 200;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(PhpJson.Encode(new PhpArray()
+                .With("bs", bs)
+                .With("server", serverInfo)
+                .With("db", db)
+                .With("plugins", new List<object?>()), PhpJson.JsonUnescapedUnicode));
+            return;
+        }
+
         Dictionary<string, object?> vars = PageVars(context, user, "general.status");
         vars["detail"] = new PhpArray()
             .With("bs", bs)
