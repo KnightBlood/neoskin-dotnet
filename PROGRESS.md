@@ -141,3 +141,14 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
 - 管理端 SPA 通过请求头 `X-Neoskin-Spa: 1` 标识；`POST|PUT /admin/communications*` 与撤回据此返回 JSON，其他请求保持 302（不改变 legacy 行为）。
 
 - 新增 `GET /api/admin/update/info`：返回 `latest/current/error/can_update/package/upload_limits`，管理端更新页直接展示最新版本与可更新状态。
+
+### 2026-11-08（bootstrap 开关 + 验证门禁确认）
+
+- `Web/SpaFrontend.cs` 的 bootstrap options 增加 `allow_downloading_texture`、
+  `require_verification`、`player_name_length_min/max`、`user_initial_score`、`return_score`、
+  `sign_after_zero`、`sign_gap_time`、`reporter_score_modification`、`reporter_reward_score`。
+- `verified` 门禁已由 `routes.json` 中间件（`CheckUserVerified`）覆盖
+  `/user/player*`、`/user/oauth/manage`、`/texture*`、`/skinlib/upload`、`POST /skinlib`、
+  `POST /skinlib/report`；`/api/*` 不门禁，本轮补充回归验证。
+- 174 条 PHP 路由保持不变。
+- 验证：`dotnet test` 447 passed / 1 skipped。
