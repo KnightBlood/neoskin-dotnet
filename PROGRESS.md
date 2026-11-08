@@ -152,3 +152,4 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
   `POST /skinlib/report`；`/api/*` 不门禁，本轮补充回归验证。
 - 174 条 PHP 路由保持不变。
 - 验证：`dotnet test` 447 passed / 1 skipped。
+- 共享前端产物已同步到 `public/app-next`（site `index-DKdkLoHq.js` / admin `index-CMpios6g.js`）。
