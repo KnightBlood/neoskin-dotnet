@@ -17,7 +17,7 @@
 | 路由接线 | **174 / 174** |
 | 测试 | **446 passed / 1 skipped**（矩阵测试在无 DB 环境跳过） |
 | Native AOT 发布 | `neoskin.exe` 约 **43.1 MB**（win-x64，含 3 个数据库驱动） |
-| 前端 | 复用源项目 `public/app`（部署时拷到 `wwwroot/`）；`/lang/<locale>.js` 后端生成 |
+| 前端 | legacy `public/app`（部署时拷到 `wwwroot/`）+ NeoSkin 共享前端 `public/app-next`（React 19 / Vite 8）；`/lang/<locale>.js` 后端生成 |
 
 已实现：认证全流程（登录/注册/找回/重置/验证/验证码/绑定）、OAuth2（Passport 兼容）、
 用户中心、玩家/衣柜/皮肤库（含上传与 PNG 消毒）、Minecraft 纹理契约、举报、
