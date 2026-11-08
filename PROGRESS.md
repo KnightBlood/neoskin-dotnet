@@ -152,7 +152,7 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
   `POST /skinlib/report`；`/api/*` 不门禁，本轮补充回归验证。
 - 174 条 PHP 路由保持不变。
 - 验证：`dotnet test` 447 passed / 1 skipped。
-- 共享前端产物已同步到 `public/app-next`（site `index-pnUYroLe.js` / admin `index-DOqbNUvq.js`）。
+- 共享前端产物已同步到 `public/app-next`（site `index-pnUYroLe.js` / admin `index-8f1tgAaz.js`）。
 
 ### 2026-11-08（P6 切换验收，.NET 本机）
 
@@ -169,6 +169,6 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
   Blessing Skin Server 上游归属（见 `PORT-NOTES.md`）。
 - 新增 `.github/workflows/release.yml`：推送 `v*` tag 后在 GitHub runner 构建并发布
   `neoskin-dotnet_<version>_<rid>.zip`，包含 Native AOT 二进制、`Resources`、`public/app-next` 与部署文档。
-- 共享前端产物更新为 site `index-pnUYroLe.js` / admin `index-DOqbNUvq.js`。
+- 共享前端产物更新为 site `index-pnUYroLe.js` / admin `index-8f1tgAaz.js`。
 - 验证：`dotnet test` 447 passed / 1 skipped（品牌默认值断言已按 NeoSkin 调整）。
 - GitHub Release `v6.0.11` 已发布：6 个 RID 的 `neoskin-dotnet_6.0.11_*.zip`。
