@@ -161,3 +161,4 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
 - `FRONTEND_MODE=legacy` 回滚：`GET /` 返回 legacy 页面（含 `#blessing-extra`），
   `/app-next/site/` 仍可访问。
 - 需把 `public/app-next` 放在进程 BaseDirectory 下（`bin/.../public`）后再运行自包含 exe。
+- Playwright 浏览器 E2E（`NEOSKIN_BROWSER_E2E=1`）通过。
