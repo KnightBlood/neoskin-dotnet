@@ -153,3 +153,11 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
 - 174 条 PHP 路由保持不变。
 - 验证：`dotnet test` 447 passed / 1 skipped。
 - 共享前端产物已同步到 `public/app-next`（site `index-BNFSlUne.js` / admin `index-C75dBgWo.js`）。
+
+### 2026-11-08（P6 切换验收，.NET 本机）
+
+- `FRONTEND_MODE=next`：`GET /` → 302 `/app-next/site/`，`GET /admin` → 302 `/app-next/admin/`，
+  两个 SPA 壳与 `/api/bootstrap` 均 200；站点/管理端页面 0 console error。
+- `FRONTEND_MODE=legacy` 回滚：`GET /` 返回 legacy 页面（含 `#blessing-extra`），
+  `/app-next/site/` 仍可访问。
+- 需把 `public/app-next` 放在进程 BaseDirectory 下（`bin/.../public`）后再运行自包含 exe。
