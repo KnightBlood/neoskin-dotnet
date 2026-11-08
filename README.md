@@ -159,4 +159,4 @@ git push origin v6.0.11
 
 Release 产物：`neoskin-dotnet_<version>_<rid>.zip`
 （`linux-x64`、`linux-arm64`、`win-x64`、`win-arm64`、`osx-x64`、`osx-arm64`），
-包含自包含二进制、`Resources`、`public/app-next` 与部署文档。
+包含自包含二进制、`Resources`、`public/app`、`public/app-next` 与部署文档。

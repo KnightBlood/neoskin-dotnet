@@ -14,6 +14,8 @@ concurrency:
 
 env:
   DOTNET_VERSION: "10.0.x"
+  FRONTEND_URL: "https://github.com/DreamCraft-Tech/blessing-skin-server-patch/releases/download/v6.0.10_patch/blessing-skin-server_6.0.10_patch_php85.zip"
+  FRONTEND_SHA256: "bb94f83718f3fca3737a04b2097e747720ebd5966979cf042dbbba5434da3e73"
 
 jobs:
   build:
@@ -54,6 +56,17 @@ jobs:
 
       - name: Publish
         run: dotnet publish src/NeoSkin.Web -c Release -r ${{ matrix.rid }} -o publish
+
+      - name: Fetch legacy frontend assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -sSLo /tmp/bs.zip "$FRONTEND_URL"
+          echo "$FRONTEND_SHA256  /tmp/bs.zip" | sha256sum -c -
+          unzip -q /tmp/bs.zip -d /tmp/bs
+          mkdir -p publish/wwwroot
+          rm -rf publish/wwwroot/app
+          cp -r /tmp/bs/public/app publish/wwwroot/app
 
       - name: Stage
         shell: bash
