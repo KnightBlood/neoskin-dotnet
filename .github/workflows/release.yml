@@ -63,7 +63,12 @@ jobs:
           set -euo pipefail
           curl -sSLo /tmp/bs.zip "$FRONTEND_URL"
           echo "$FRONTEND_SHA256  /tmp/bs.zip" | sha256sum -c -
-          unzip -q /tmp/bs.zip -d /tmp/bs
+          rm -rf /tmp/bs && mkdir -p /tmp/bs
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            tar -xf /tmp/bs.zip -C /tmp/bs
+          else
+            unzip -q /tmp/bs.zip -d /tmp/bs
+          fi
           mkdir -p publish/wwwroot
           rm -rf publish/wwwroot/app
           cp -r /tmp/bs/public/app publish/wwwroot/app
