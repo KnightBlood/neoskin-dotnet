@@ -77,14 +77,14 @@ public static class CliRunner
     {
         if (File.Exists(paths.InstallLock))
         {
-            Console.WriteLine("You have installed Blessing Skin Server. Nothing to do.");
+            Console.WriteLine("You have installed NeoSkin. Nothing to do.");
             return 0;
         }
 
         string email = Required(args, "--email", 0);
         string password = Required(args, "--password", 1);
         string nickname = Required(args, "--nickname", 2);
-        string siteName = Value(args, "--site-name") ?? "Blessing Skin";
+        string siteName = Value(args, "--site-name") ?? "NeoSkin";
 
         EnsureAppKey(settings);
 

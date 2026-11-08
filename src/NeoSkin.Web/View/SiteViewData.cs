@@ -40,7 +40,7 @@ public static class SiteViewData
     public static void Base(Dictionary<string, object?> vars, Option option, string locale,
         bool darkMode)
     {
-        vars["site_name"] = option.GetLocalized("site_name", "Blessing Skin");
+        vars["site_name"] = option.GetLocalized("site_name", "NeoSkin");
         string color = Cast(option.Get("navbar_color", "cyan"), "cyan");
         vars["navbar_color"] = color;
         vars["color_mode"] = LightColors.Contains(color) ? "light" : "dark";
@@ -178,7 +178,7 @@ public static class SiteViewData
             .With("version", "6.0.11_patch")
             .With("locale", locale)
             .With("base_url", urlRoot)
-            .With("site_name", option.GetLocalized("site_name", "Blessing Skin"))
+            .With("site_name", option.GetLocalized("site_name", "NeoSkin"))
             .With("route", LaravelPath(requestPath));
 
     /// <summary><c>HeadComposer::addFavicon</c>。</summary>
@@ -209,7 +209,7 @@ public static class SiteViewData
 
         return Cast(raw, "")
             .Replace("{site_name}",
-                Cast(option.GetLocalized("site_name", "Blessing Skin"), ""))
+                Cast(option.GetLocalized("site_name", "NeoSkin"), ""))
             .Replace("{site_url}", Cast(option.Get("site_url", ""), ""));
     }
 

@@ -54,7 +54,7 @@ public static class AuthView
         vars["pageTitle"] = Text(translator, "auth.register.title");
         vars["rows"] = PluginFilters.ApplyList("auth_page_rows:register", ToList(RegisterRows),
             PluginHost.PluginRuntime.Current);
-        vars["site_name"] = option.GetLocalized("site_name", "Blessing Skin");
+        vars["site_name"] = option.GetLocalized("site_name", "NeoSkin");
         vars["extra"] = PhpJson.Encode(new PhpArray()
             .With("player", option.GetBoolean("register_with_player_name", true))
             .With("recaptcha", SiteViewData.FalsyToNull(option.Get("recaptcha_sitekey")))

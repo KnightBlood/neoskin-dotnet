@@ -14,12 +14,12 @@ public static class OptionDefaults
         new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(StringComparer.Ordinal)
         {
             ["site_url"] = "",
-            ["site_name"] = "Blessing Skin",
-            ["site_description"] = "Open-source PHP Minecraft Skin Hosting Service",
+            ["site_name"] = "NeoSkin",
+            ["site_description"] = "NeoSkin Minecraft Skin Hosting Service",
             ["register_with_player_name"] = "true",
             ["require_verification"] = "false",
             ["regs_per_ip"] = "3",
-            ["announcement"] = "Welcome to Blessing Skin {version}!",
+            ["announcement"] = "Welcome to NeoSkin {version}!",
             ["home_pic_url"] = "./app/bg.webp",
             ["custom_css"] = "",
             ["custom_js"] = "",

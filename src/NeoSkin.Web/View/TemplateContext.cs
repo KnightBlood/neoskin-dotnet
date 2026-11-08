@@ -754,8 +754,8 @@ public sealed class TemplateViewContext(
     /// <summary><c>window.blessing</c> 的对象（模板里是 <c>${blessing}</c> 变量）。</summary>
     public PhpArray Blessing()
     {
-        string siteName = option?.GetLocalized("site_name", "Blessing Skin")?.ToString()
-                          ?? "Blessing Skin";
+        string siteName = option?.GetLocalized("site_name", "NeoSkin")?.ToString()
+                          ?? "NeoSkin";
         return new PhpArray()
             .With("version", "6.0.11_patch")
             .With("locale", locale)

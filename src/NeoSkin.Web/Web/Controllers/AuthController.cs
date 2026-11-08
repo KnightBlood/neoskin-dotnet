@@ -341,7 +341,7 @@ public sealed class AuthController(
             new Dictionary<string, string> { ["uid"] = user.Uid.ToString() }, _appKey);
         string fullUrl = "http://" + Host(context) + url;
 
-        string sitename = option.GetLocalized("site_name", "Blessing Skin")?.ToString() ?? "Blessing Skin";
+        string sitename = option.GetLocalized("site_name", "NeoSkin")?.ToString() ?? "NeoSkin";
         string subject = Trans(context, "user.verification.mail.title",
             new Dictionary<string, object?> { ["sitename"] = sitename });
         string body = BuildForgotMailBody(option, Translator(context), locale, fullUrl, sitename);
@@ -687,7 +687,7 @@ public sealed class AuthController(
             new Dictionary<string, string> { ["user"] = user.Uid.ToString() }, _appKey);
         string fullUrl = "http://" + Host(context) + signed;
 
-        string sitename = option.GetLocalized("site_name", "Blessing Skin")?.ToString() ?? "Blessing Skin";
+        string sitename = option.GetLocalized("site_name", "NeoSkin")?.ToString() ?? "NeoSkin";
         string subject = Trans(context, "user.verification.mail.title",
             new Dictionary<string, object?> { ["sitename"] = sitename });
         string body = BuildVerifyMailBody(option, Translator(context), locale, fullUrl, sitename);

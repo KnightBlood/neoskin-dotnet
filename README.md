@@ -1,8 +1,10 @@
 # NeoSkin.NET
 
-> 最后更新：2026-11-06
+> 最后更新：2026-11-08
 
-**Blessing Skin Server 6.0.11_patch 的 .NET 10 / Native AOT 移植**。
+> 仓库：<https://github.com/KnightBlood/neoskin-dotnet>（`main`）
+
+**NeoSkin** 的 .NET 10 / Native AOT 实现（Minecraft 皮肤托管平台），迁移自 Blessing Skin Server 6.0.11_patch。
 
 - **参考实现（权威）**：[`blessing-skin-server-Laravel13`](../blessing-skin-server-Laravel13)（PHP 6.0.11_patch）
 - **已验证的参考移植**：[`NeoSkinSpringBoot`](../NeoSkinSpringBoot)（Java 21，174 路由 / 1085 tests 全绿）
@@ -145,3 +147,16 @@ $env:ASPNETCORE_URLS='http://0.0.0.0:5000'
 | [PORT-NOTES.md](PORT-NOTES.md) | 偏差、决策与踩坑（含插件 ABI 设计 §61） |
 | [DEPLOYMENT.md](DEPLOYMENT.md) | 构建、配置、部署与升级 |
 | [DB-MATRIX.md](DB-MATRIX.md) | 数据库矩阵 |
+
+## 发布
+
+推送 `v*` tag 后，`.github/workflows/release.yml` 构建 Native AOT 并发布：
+
+```bash
+git tag v6.0.11
+git push origin v6.0.11
+```
+
+Release 产物：`neoskin-dotnet_<version>_<rid>.zip`
+（`linux-x64`、`linux-arm64`、`win-x64`、`win-arm64`、`osx-x64`、`osx-arm64`），
+包含自包含二进制、`Resources`、`public/app-next` 与部署文档。

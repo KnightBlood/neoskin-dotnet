@@ -51,6 +51,23 @@ public sealed class OptionCorpusTest : IDisposable
             string? actual = OptionDefaults.Get(key);
             JsonNode? expectedRaw = c["expected_raw"] ?? c["expected"];
 
+            // NeoSkin 有意把品牌相关默认值改为自身名称；其余键仍与 PHP 逐字一致。
+            if (key == "site_name")
+            {
+                Assert.Equal("NeoSkin", actual);
+                continue;
+            }
+            if (key == "site_description")
+            {
+                Assert.Equal("NeoSkin Minecraft Skin Hosting Service", actual);
+                continue;
+            }
+            if (key == "announcement")
+            {
+                Assert.Equal("Welcome to NeoSkin {version}!", actual);
+                continue;
+            }
+
             Assert.True(Matches(expectedRaw, actual),
                 $"{Corpus.TextOrEmpty(c, "id")}: default({key}) = {actual}");
         }

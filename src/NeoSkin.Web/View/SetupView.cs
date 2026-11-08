@@ -27,7 +27,7 @@ public static class SetupView
             ["locale"] = locale,
             ["view"] = view,
             ["cdn_base"] = SiteViewData.FalsyToNull(option.Get("cdn_address"))?.ToString() ?? "",
-            ["site_name"] = option.Get("site_name", "Blessing Skin"),
+            ["site_name"] = option.Get("site_name", "NeoSkin"),
             ["version"] = settings.Version,
             ["errors"] = TemplateErrors.Empty,
         };

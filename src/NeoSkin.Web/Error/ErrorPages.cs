@@ -89,7 +89,7 @@ public sealed class ErrorPages(Option option, Config.NeoSkinSettings settings)
         catch (Exception)
         {
             // 数据库不可用时错误页仍要能渲染
-            vars["site_name"] = "Blessing Skin";
+            vars["site_name"] = "NeoSkin";
             vars["navbar_color"] = "cyan";
             vars["color_mode"] = "dark";
             vars["dark_mode"] = false;

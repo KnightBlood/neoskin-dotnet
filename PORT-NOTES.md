@@ -1715,3 +1715,12 @@ ABI v1 在设计中补充了 `Free` 回调：插件返回的结果由插件分�
   `player_name_length_min/max`、`user_initial_score`、`return_score`、`sign_after_zero`、
   `sign_gap_time`、`reporter_score_modification`、`reporter_reward_score`。
 - 无需新增路由或中间件，174 条 PHP 路由保持不变。
+
+### NeoSkin 品牌默认值（2026-11-08）
+
+- 有意偏离 PHP 默认值：`site_name=NeoSkin`、
+  `site_description=NeoSkin Minecraft Skin Hosting Service`、
+  `announcement=Welcome to NeoSkin {version}!`。
+- 安装向导与更新提示中的产品名改为 NeoSkin。
+- 保留上游归属与兼容标识：`copyright_prefer` 的 7 条文案、页脚链接、
+  `blessing-*` 路由/字段/cookie/模板钩子均不变。

@@ -152,7 +152,7 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
   `POST /skinlib/report`；`/api/*` 不门禁，本轮补充回归验证。
 - 174 条 PHP 路由保持不变。
 - 验证：`dotnet test` 447 passed / 1 skipped。
-- 共享前端产物已同步到 `public/app-next`（site `index-BNFSlUne.js` / admin `index-C75dBgWo.js`）。
+- 共享前端产物已同步到 `public/app-next`（site `index-pnUYroLe.js` / admin `index-DOqbNUvq.js`）。
 
 ### 2026-11-08（P6 切换验收，.NET 本机）
 
@@ -162,3 +162,11 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
   `/app-next/site/` 仍可访问。
 - 需把 `public/app-next` 放在进程 BaseDirectory 下（`bin/.../public`）后再运行自包含 exe。
 - Playwright 浏览器 E2E（`NEOSKIN_BROWSER_E2E=1`）通过。
+
+### 2026-11-08（NeoSkin 品牌与发布）
+
+- 默认站点名/描述/公告、安装向导与更新包提示改为 NeoSkin；版权选项与页脚署名保留
+  Blessing Skin Server 上游归属（见 `PORT-NOTES.md`）。
+- 新增 `.github/workflows/release.yml`：推送 `v*` tag 后在 GitHub runner 构建并发布
+  `neoskin-dotnet_<version>_<rid>.zip`，包含 Native AOT 二进制、`Resources`、`public/app-next` 与部署文档。
+- 共享前端产物更新为 site `index-pnUYroLe.js` / admin `index-DOqbNUvq.js`。
