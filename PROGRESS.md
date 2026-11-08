@@ -171,3 +171,4 @@ dotnet test NeoSkin.NET.slnx --filter "FullyQualifiedName~DatabaseMatrixTest"
   `neoskin-dotnet_<version>_<rid>.zip`，包含 Native AOT 二进制、`Resources`、`public/app-next` 与部署文档。
 - 共享前端产物更新为 site `index-pnUYroLe.js` / admin `index-DOqbNUvq.js`。
 - 验证：`dotnet test` 447 passed / 1 skipped（品牌默认值断言已按 NeoSkin 调整）。
+- GitHub Release `v6.0.11` 已发布：6 个 RID 的 `neoskin-dotnet_6.0.11_*.zip`。
