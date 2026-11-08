@@ -57,21 +57,35 @@ jobs:
       - name: Publish
         run: dotnet publish src/NeoSkin.Web -c Release -r ${{ matrix.rid }} -o publish
 
-      - name: Fetch legacy frontend assets
+      - name: Fetch legacy frontend assets (Unix)
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           set -euo pipefail
           curl -sSLo /tmp/bs.zip "$FRONTEND_URL"
           echo "$FRONTEND_SHA256  /tmp/bs.zip" | sha256sum -c -
           rm -rf /tmp/bs && mkdir -p /tmp/bs
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            tar -xf /tmp/bs.zip -C /tmp/bs
-          else
-            unzip -q /tmp/bs.zip -d /tmp/bs
-          fi
+          unzip -q /tmp/bs.zip -d /tmp/bs
           mkdir -p publish/wwwroot
           rm -rf publish/wwwroot/app
           cp -r /tmp/bs/public/app publish/wwwroot/app
+
+      - name: Fetch legacy frontend assets (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $zip = Join-Path $env:RUNNER_TEMP 'bs.zip'
+          Invoke-WebRequest -Uri $env:FRONTEND_URL -OutFile $zip
+          $hash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
+          if ($hash -ne $env:FRONTEND_SHA256) {
+            throw "frontend sha256 mismatch: $hash"
+          }
+          $dir = Join-Path $env:RUNNER_TEMP 'bs'
+          Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
+          Expand-Archive -Path $zip -DestinationPath $dir -Force
+          New-Item -ItemType Directory -Force publish/wwwroot | Out-Null
+          Remove-Item publish/wwwroot/app -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item (Join-Path $dir 'public/app') publish/wwwroot/app -Recurse
 
       - name: Stage
         shell: bash
